@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GRANNY - Versión Web</title>
+    <title>GRANNY - Juego Funcional</title>
     <style>
         * {
             margin: 0;
@@ -21,8 +21,8 @@
             position: relative;
         }
 
-        /* Pantalla de inicio */
-        .pantalla-inicio {
+        /* PANTALLA INICIO */
+        .inicio {
             position: absolute;
             top: 0;
             left: 0;
@@ -34,17 +34,24 @@
             align-items: center;
             justify-content: center;
             z-index: 100;
+            text-align: center;
         }
 
-        .pantalla-inicio h1 {
+        .inicio h1 {
             color: #ff4444;
             font-size: 3rem;
             text-shadow: 0 0 20px #ff0000;
-            margin-bottom: 50px;
+            margin-bottom: 30px;
             animation: parpadear 2s infinite alternate;
         }
 
-        .btn-iniciar {
+        .inicio p {
+            margin-bottom: 40px;
+            font-size: 1.1rem;
+            max-width: 80%;
+        }
+
+        .btn {
             padding: 15px 40px;
             background-color: #ff4444;
             border: none;
@@ -53,332 +60,237 @@
             font-weight: bold;
             border-radius: 5px;
             cursor: pointer;
-            transition: all 0.3s;
             box-shadow: 0 0 15px #ff0000;
         }
 
-        .btn-iniciar:hover {
+        .btn:hover {
             background-color: #ff0000;
-            transform: scale(1.1);
+            transform: scale(1.05);
         }
 
-        /* Mundo del juego */
-        .mundo-juego {
+        .juego {
             position: absolute;
-            top: 0;
-            left: 0;
             width: 100%;
             height: 100%;
-            display: none;
             background-image: url('https://picsum.photos/id/164/1920/1080');
             background-size: cover;
-            background-position: center;
             filter: brightness(0.2);
+            display: none;
         }
 
-        /* Interfaz de usuario */
-        .interfaz {
+        .jugador {
             position: absolute;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 50;
-            display: flex;
-            gap: 20px;
-            align-items: center;
+            width: 30px;
+            height: 50px;
+            background-color: rgba(255, 255, 255, 0.7);
         }
 
-        .btn-movimiento {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            background-color: rgba(255, 255, 255, 0.2);
-            border: 2px solid #fff;
-            color: #fff;
-            font-size: 1.5rem;
-            cursor: pointer;
-            transition: background-color 0.2s;
-        }
-
-        .btn-movimiento:hover {
-            background-color: rgba(255, 255, 255, 0.4);
-        }
-
-        .btn-interaccion {
-            padding: 10px 25px;
-            background-color: rgba(255, 68, 68, 0.7);
-            border: 2px solid #ff4444;
-            color: #fff;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: background-color 0.2s;
-        }
-
-        .btn-interaccion:hover {
-            background-color: rgba(255, 0, 0, 0.9);
-        }
-
-        /* Objetos del juego */
         .objeto {
             position: absolute;
             width: 40px;
             height: 40px;
             background-size: cover;
-            cursor: pointer;
-            z-index: 10;
-            animation: brillar 2s infinite alternate;
         }
 
-        .llave {
-            background-image: url('https://picsum.photos/id/119/100/100');
-            top: 60%;
-            left: 25%;
-        }
+        .llave { top: 60%; left: 25%; }
+        .martillo { top: 45%; left: 70%; }
 
-        .martillo {
-            background-image: url('https://picsum.photos/id/24/100/100');
-            top: 45%;
-            left: 70%;
-        }
-
-        .puerta-principal {
+        .puerta {
             position: absolute;
             top: 10%;
             left: 45%;
             width: 120px;
             height: 250px;
-            background-color: rgba(100, 50, 50, 0.8);
-            border: 3px solid #502020;
-            z-index: 5;
-            cursor: pointer;
+            background: brown;
         }
 
-        .puerta-abierta {
-            background-color: transparent;
-            border: none;
-            background-image: url('https://picsum.photos/id/169/120/250');
-            background-size: cover;
-        }
+        .puerta.abierta { background: green; }
 
-        /* Granny */
         .granny {
             position: absolute;
             width: 100px;
             height: 180px;
-            background-image: url('https://picsum.photos/id/237/100/180');
-            background-size: cover;
-            z-index: 15;
+            background: red;
             display: none;
-            animation: caminar 0.5s infinite alternate;
         }
 
-        /* Mensajes y estado */
-        .estado-juego {
+        .estado {
             position: absolute;
-            top: 20px;
-            left: 20px;
-            background-color: rgba(0, 0, 0, 0.8);
-            padding: 15px;
-            border: 1px solid #ff4444;
-            z-index: 50;
+            top: 10px;
+            left: 10px;
         }
 
-        .mensaje-alerta {
+        .interfaz {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .btn-mov, .btn-interactuar {
+            margin: 5px;
+            padding: 10px;
+        }
+
+        .alerta {
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            background-color: rgba(255, 0, 0, 0.9);
-            padding: 30px 50px;
-            font-size: 1.5rem;
-            text-shadow: 0 0 10px #000;
             display: none;
-            z-index: 60;
-            animation: temblar 0.2s infinite alternate;
         }
 
-        .pantalla-fin {
+        .fin {
+            display: none;
             position: absolute;
-            top: 0;
-            left: 0;
             width: 100%;
             height: 100%;
-            background-color: #000;
-            display: none;
-            flex-direction: column;
-            align-items: center;
+            background: black;
             justify-content: center;
-            z-index: 200;
+            align-items: center;
+            flex-direction: column;
         }
 
-        .pantalla-fin h2 {
-            color: #ff4444;
-            font-size: 2.5rem;
-            margin-bottom: 30px;
-        }
-
-        /* Animaciones */
-        @keyframes parpadear {
-            from { opacity: 1; }
-            to { opacity: 0.5; }
-        }
-
-        @keyframes brillar {
-            from { filter: brightness(0.8); }
-            to { filter: brightness(1.5); }
-        }
-
-        @keyframes caminar {
-            from { transform: translateY(0); }
-            to { transform: translateY(5px); }
-        }
-
-        @keyframes temblar {
-            from { transform: translate(-50%, -50%) rotate(0deg); }
-            to { transform: translate(-50%, -50%) rotate(2deg); }
-        }
-
-        /* Responsive */
+        /* 📱 MODO CELULAR */
         @media (max-width: 768px) {
-            .pantalla-inicio h1 { font-size: 2rem; }
-            .btn-movimiento { width: 50px; height: 50px; }
-            .estado-juego { font-size: 0.8rem; padding: 10px; }
-            .mensaje-alerta { font-size: 1.2rem; padding: 20px 30px; }
+
+            .inicio h1 { font-size: 2rem; }
+            .inicio p { font-size: 0.9rem; }
+
+            .btn { padding: 12px 25px; font-size: 1rem; }
+
+            .jugador { width: 25px; height: 40px; }
+            .objeto { width: 30px; height: 30px; }
+            .puerta { width: 90px; height: 200px; }
+            .granny { width: 70px; height: 140px; }
+
+            .btn-mov {
+                width: 60px;
+                height: 60px;
+                font-size: 1.5rem;
+            }
+
+            .estado {
+                font-size: 0.8rem;
+            }
         }
+
+        @keyframes parpadear { from {opacity:1;} to {opacity:0.5;} }
     </style>
 </head>
 <body>
-    <!-- Pantalla de inicio -->
-    <div class="pantalla-inicio" id="pantalla-inicio">
-        <h1>GRANNY</h1>
-        <button class="btn-iniciar" id="btn-iniciar">INICIAR JUEGO</button>
-        <p style="margin-top: 30px; font-size: 0.9rem;">Objetivo: Encuentra la llave y el martillo para escapar antes de que Granny te atrape</p>
-    </div>
 
-    <!-- Mundo del juego -->
-    <div class="mundo-juego" id="mundo-juego"></div>
+<div class="inicio" id="inicio">
+    <h1>GRANNY</h1>
+    <button class="btn" id="btn-iniciar">EMPEZAR</button>
+</div>
 
-    <!-- Objetos -->
-    <div class="objeto llave" id="llave" title="Llave de la puerta"></div>
-    <div class="objeto martillo" id="martillo" title="Martillo para abrir la puerta"></div>
-
-    <!-- Puerta principal -->
-    <div class="puerta-principal" id="puerta-principal" title="Puerta de salida"></div>
-
-    <!-- Granny -->
+<div class="juego" id="juego">
+    <div class="jugador" id="jugador"></div>
+    <div class="objeto llave" id="llave"></div>
+    <div class="objeto martillo" id="martillo"></div>
+    <div class="puerta" id="puerta"></div>
     <div class="granny" id="granny"></div>
+</div>
 
-    <!-- Interfaz de usuario -->
-    <div class="interfaz">
-        <button class="btn-movimiento" id="btn-izq">&larr;</button>
-        <button class="btn-movimiento" id="btn-der">&rarr;</button>
-        <button class="btn-movimiento" id="btn-arr">&uarr;</button>
-        <button class="btn-movimiento" id="btn-aba">&darr;</button>
-        <button class="btn-interaccion" id="btn-interactuar">COGER / USAR</button>
-    </div>
+<div class="estado">
+    Objetos: <span id="objetos">Ninguno</span>
+</div>
 
-    <!-- Estado del juego -->
-    <div class="estado-juego">
-        <p>Día: <span id="dia">1</span>/5</p>
-        <p>Objetos: <span id="objetos">Ninguno</span></p>
-        <p>Estado: <span id="estado">Seguro</span></p>
-    </div>
+<div class="interfaz">
+    <button id="arriba">↑</button>
+    <button id="abajo">↓</button>
+    <button id="izquierda">←</button>
+    <button id="derecha">→</button>
+    <button id="interactuar">USAR</button>
+</div>
 
-    <!-- Mensajes de alerta -->
-    <div class="mensaje-alerta" id="mensaje-alerta">¡GRANNY TE HA VISTO!</div>
+<div class="alerta" id="alerta"></div>
 
-    <!-- Pantalla de fin -->
-    <div class="pantalla-fin" id="pantalla-fin">
-        <h2 id="texto-fin"></h2>
-        <button class="btn-iniciar" id="btn-reiniciar">JUGAR DE NUEVO</button>
-    </div>
+<div class="fin" id="fin">
+    <h2 id="texto-fin"></h2>
+    <button id="btn-reiniciar">REINICIAR</button>
+</div>
 
-    <!-- Sonidos -->
-    <audio id="sonido-pasos" src="https://www.soundjay.com/footstep/sounds/footstep-wood-03.mp3" loop>
-    <audio id="sonido-gemido" src="https://www.soundjay.com/human/sounds/scream-05.mp3">
-    <audio id="sonido-objeto" src="https://www.soundjay.com/button/sounds/button-09.mp3">
-    <audio id="sonido-puerta" src="https://www.soundjay.com/door/sounds/door-creak-01.mp3">
-    <audio id="sonido-escapa" src="https://www.soundjay.com/misc/sounds/success-01.mp3">
-    <audio id="sonido-gameover" src="https://www.soundjay.com/misc/sounds/failure-01.mp3">
+<script>
+let jugadorPos = { x: 50, y: 50 };
+let objetos = [];
+let juegoActivo = false;
+let grannyActiva = false;
 
-    <script>
-        // Elementos del DOM
-        const pantallaInicio = document.getElementById("pantalla-inicio");
-        const mundoJuego = document.getElementById("mundo-juego");
-        const granny = document.getElementById("granny");
-        const llave = document.getElementById("llave");
-        const martillo = document.getElementById("martillo");
-        const puertaPrincipal = document.getElementById("puerta-principal");
-        const mensajeAlerta = document.getElementById("mensaje-alerta");
-        const pantallaFin = document.getElementById("pantalla-fin");
-        const textoFin = document.getElementById("texto-fin");
+const jugador = document.getElementById('jugador');
+const llave = document.getElementById('llave');
+const martillo = document.getElementById('martillo');
+const puerta = document.getElementById('puerta');
+const granny = document.getElementById('granny');
 
-        // Botones
-        const btnIniciar = document.getElementById("btn-iniciar");
-        const btnReiniciar = document.getElementById("btn-reiniciar");
-        const btnInteractuar = document.getElementById("btn-interactuar");
-        const btnIzq = document.getElementById("btn-izq");
-        const btnDer = document.getElementById("btn-der");
-        const btnArr = document.getElementById("btn-arr");
-        const btnAba = document.getElementById("btn-aba");
+function actualizarJugador() {
+    jugador.style.left = jugadorPos.x + "%";
+    jugador.style.top = jugadorPos.y + "%";
+}
 
-        // Estado del juego
-        const estadoJuego = {
-            dia: 1,
-            objetos: [],
-            posicionJugador: { x: 50, y: 50 },
-            grannyActiva: false,
-            juegoTerminado: false
-        };
+function mover(dir) {
+    if (!juegoActivo) return;
 
-        // Sonidos
-        const sonidoPasos = document.getElementById("sonido-pasos");
-        const sonidoGemido = document.getElementById("sonido-gemido");
-        const sonidoObjeto = document.getElementById("sonido-objeto");
-        const sonidoPuerta = document.getElementById("sonido-puerta");
-        const sonidoEscapa = document.getElementById("sonido-escapa");
-        const sonidoGameOver = document.getElementById("sonido-gameover");
+    if (dir === 'arriba') jugadorPos.y -= 2;
+    if (dir === 'abajo') jugadorPos.y += 2;
+    if (dir === 'izquierda') jugadorPos.x -= 2;
+    if (dir === 'derecha') jugadorPos.x += 2;
 
-        // Actualizar interfaz
-        function actualizarInterfaz() {
-            document.getElementById("dia").textContent = estadoJuego.dia;
-            document.getElementById("objetos").textContent = estadoJuego.objetos.length > 0 ? estadoJuego.objetos.join(", ") : "Ninguno";
-            document.getElementById("estado").textContent = estadoJuego.grannyActiva ? "Peligro" : "Seguro";
-        }
+    actualizarJugador();
+}
 
-        // Movimiento de Granny
-        function moverGranny() {
-            if (!estadoJuego.grannyActiva || estadoJuego.juegoTerminado) return;
+function moverGranny() {
+    let gx = parseFloat(granny.style.left) || 10;
+    let gy = parseFloat(granny.style.top) || 10;
 
-            const posJugadorX = estadoJuego.posicionJugador.x;
-            const posJugadorY = estadoJuego.posicionJugador.y;
-            let posGrannyX = parseInt(granny.style.left) || 10;
-            let posGrannyY = parseInt(granny.style.top) || 10;
+    if (gx < jugadorPos.x) gx += 0.5;
+    if (gx > jugadorPos.x) gx -= 0.5;
+    if (gy < jugadorPos.y) gy += 0.5;
+    if (gy > jugadorPos.y) gy -= 0.5;
 
-            // Movimiento hacia el jugador
-            if (posGrannyX < posJugadorX) posGrannyX += 0.5;
-            else if (posGrannyX > posJugadorX) posGrannyX -= 0.5;
+    granny.style.left = gx + "%";
+    granny.style.top = gy + "%";
 
-            if (posGrannyY < posJugadorY) posGrannyY += 0.5;
-            else if (posGrannyY > posJugadorY) posGrannyY -= 0.5;
+    setTimeout(moverGranny, 50);
+}
 
-            granny.style.left = `${posGrannyX}%`;
-            granny.style.top = `${posGrannyY}%`;
+document.getElementById('btn-iniciar').onclick = () => {
+    document.getElementById('inicio').style.display = 'none';
+    document.getElementById('juego').style.display = 'block';
+    juegoActivo = true;
 
-            // Comprobar si te atrapa
-            if (Math.abs(posGrannyX - posJugadorX) < 5 && Math.abs(posGrannyY - posJugadorY) < 5) {
-                gameOver("GRANNY TE HA ATRAPADO...");
-            }
+    granny.style.display = 'block';
+    moverGranny();
+};
 
-            setTimeout(moverGranny, 50);
-        }
+document.getElementById('arriba').onclick = () => mover('arriba');
+document.getElementById('abajo').onclick = () => mover('abajo');
+document.getElementById('izquierda').onclick = () => mover('izquierda');
+document.getElementById('derecha').onclick = () => mover('derecha');
 
-        // Activar Granny después de un tiempo
-        function activarGranny() {
-            estadoJuego.grannyActiva = true;
-            granny.style.display = "block";
-            granny.style.left = `${Math.random() * 100}%`;
-            granny.style.top = `${Math.random() * 100}%`;
-            sonidoPasos.play();
-            son
-        
+/* 📱 CONTROLES TÁCTILES */
+let intervaloMovimiento = null;
+
+function iniciarMovimiento(dir) {
+    intervaloMovimiento = setInterval(() => mover(dir), 50);
+}
+
+function detenerMovimiento() {
+    clearInterval(intervaloMovimiento);
+}
+
+arriba.addEventListener('touchstart', () => iniciarMovimiento('arriba'));
+abajo.addEventListener('touchstart', () => iniciarMovimiento('abajo'));
+izquierda.addEventListener('touchstart', () => iniciarMovimiento('izquierda'));
+derecha.addEventListener('touchstart', () => iniciarMovimiento('derecha'));
+
+arriba.addEventListener('touchend', detenerMovimiento);
+abajo.addEventListener('touchend', detenerMovimiento);
+izquierda.addEventListener('touchend', detenerMovimiento);
+derecha.addEventListener('touchend', detenerMovimiento);
+
+</script>
+
+</body>
+</html>
