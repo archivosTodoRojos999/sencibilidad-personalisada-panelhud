@@ -3,77 +3,113 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Generador de Sensibilidad</title>
+<title>Generador de Sensibilidad SystemWoods</title>
 <style>
-  /* Estilos generales */
+  /* Estilo global y responsivo */
   body {
-    font-family: Arial, sans-serif;
-    background-color: #ff0000; /* Fondo rojo */
-    color: #fff; /* Texto blanco */
     margin: 0;
-    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #222;
     display: flex;
     justify-content: center;
     align-items: center;
     min-height: 100vh;
   }
-  .container {
-    max-width: 400px;
-    background-color: rgba(255, 255, 255, 0.1); /* Fondo semi-transparente */
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.3);
-    text-align: center;
+
+  .card {
+    background-color: #333;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+    width: 90%;
+    max-width: 500px;
+    color: #fff;
   }
+
   h2 {
     text-align: center;
     margin-bottom: 20px;
-    color: #fff;
+    font-size: 1.8em;
   }
+
+  .slider-container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+
   label {
-    display: block;
-    margin-top: 15px;
     font-weight: bold;
+    font-size: 1.1em;
   }
-  input[type=range], input[type=number] {
-    width: 100%;
-    margin-top: 8px;
-    background-color: #fff;
-    color: #000;
-    border: none;
-    padding: 8px;
-    border-radius: 4px;
-  }
-  .resultado {
-    margin-top: 20px;
-    font-size: 1.2em;
+
+  .slider-value {
+    font-size: 1.4em;
     text-align: center;
-    background-color: rgba(255, 255, 255, 0.2); /* Fondo semi-transparente */
     padding: 10px;
-    border-radius: 6px;
+    background-color: #555;
+    border-radius: 8px;
+    margin-top: 10px;
   }
 
-  /* Estilos responsivos para dispositivos móviles */
-  @media (max-width: 600px) {
-    .container {
-      max-width: 90%;
-    }
+  input[type=range] {
+    width: 100%;
+    height: 8px;
+    border-radius: 4px;
+    background: linear-gradient(to right, #f00, #f00);
+    outline: none;
+    -webkit-appearance: none;
+    appearance: none;
   }
 
-  /* Estilos responsivos para tabletas */
-  @media (min-width: 601px) and (max-width: 1024px) {
-    .container {
-      max-width: 70%;
-    }
-    h2 {
-      font-size: 2em;
-    }
+  input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    background: #f00;
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 0 4px rgba(255,255,255,0.8);
+  }
+
+  input[type=range]::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    background: #f00;
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 0 4px rgba(255,255,255,0.8);
   }
 </style>
 </head>
 <body>
 
-<div class="container">
+<div class="card">
   <h2>Generador de Sensibilidad</h2>
-  <label for="sensibilidadRange">Sensibilidad:</label>
-  <
+  <div class="slider-container">
+    <label for="sensibilidad">Sensibilidad</label>
+    <input type="range" id="sensibilidad" min="0.1" max="10" step="0.1" value="1" />
+    <div class="slider-value" id="valorSensibilidad">Valor: 1.0</div>
+  </div>
+</div>
+
+<script>
+  const slider = document.getElementById('sensibilidad');
+  const valorDisplay = document.getElementById('valorSensibilidad');
+
+  // Función para actualizar el valor en tiempo real
+  function actualizarValor() {
+    const valor = parseFloat(slider.value);
+    valorDisplay.textContent = `Valor: ${valor.toFixed(1)}`;
+  }
+
+  // Evento para detectar cambios en el slider
+  slider.addEventListener('input', actualizarValor);
+
+  // Inicializar
+  actualizarValor();
+</script>
+
+</body>
+</html>
