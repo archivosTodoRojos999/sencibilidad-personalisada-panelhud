@@ -3,164 +3,81 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Tetris Compacto</title>
+<title>Cien Pies Interactivo</title>
 <style>
   body {
-    background:#222; margin:0; font-family:Arial; display:flex; flex-direction:column; align-items:center; color:#fff;
+    margin: 0;
+    background: #222;
+    overflow: hidden;
   }
-  <canvas id="tetris" width="240" height="480"></canvas>
-  #score { margin-top:5px; font-size:1.2em; }
-  #buttons { margin-top:10px; display:flex; gap:10px; flex-wrap:wrap; justify-content:center; }
-  button { padding:10px; font-size:1em; border:none; border-radius:5px; background:#28a745; color:#fff; cursor:pointer; }
-  button:hover { background:#218838; }
+  canvas {
+    display: block;
+  }
 </style>
 </head>
 <body>
-<h2>Tetris Grande</h2>
-<canvas id="tetris" width="160" height="320"></canvas>
-<div id="score">Puntos: 0</div>
-<div id="buttons">
-  <button onclick="move(-1)">←</button>
-  <button onclick="move(1)">→</button>
-  <button onclick="rotate()">🔄</button>
-</div>
+<canvas id="canvas"></canvas>
 <script>
-const c=document.getElementById('tetris');
-const ctx=c.getContext('2d');
-const BLOCK=30;
-let score=0, board=[], current, gameInterval, gameOver=false;
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
 
-// Formas simples
-const shapes=[
-  [[1,1],
-   [1,1]],
-  [[0,1,0],
-   [1,1,1]],
-  [[1,0,0],
-   [1,1,1]],
-  [[0,0,1],
-   [1,1,1]],
-  [[1,1,0],
-   [0,1,1]],
-  [[0,1,1],
-   [1,1,0]],
-  [[1],
-   [1],
-   [1],
-   [1]]
-];
+let width = window.innerWidth;
+let height = window.innerHeight;
+canvas.width = width;
+canvas.height = height;
 
-function init() {
-  for(let r=0; r<ROWS; r++) { board[r]=Array(COLS).fill(0); }
-  spawn();
-  document.addEventListener('keydown', handleKey);
-  gameInterval=setInterval(update, 500);
+window.addEventListener('resize', () => {
+  width = window.innerWidth;
+  height = window.innerHeight;
+  canvas.width = width;
+  canvas.height = height;
+});
+
+// Variables para el color
+let hue = 0;
+
+// Posición del ratón
+let mouseX = width/2;
+let mouseY = height/2;
+
+document.addEventListener('mousemove', e => {
+  mouseX = e.clientX;
+  mouseY = e.clientY;
+});
+
+// Función para dibujar un "pie grande"
+function drawPie(x, y, color) {
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.fillStyle = color;
+  // Dibuja un pie grande (forma simple)
+  ctx.beginPath();
+  ctx.moveTo(0, 0);
+  ctx.lineTo(-50, 20);
+  ctx.lineTo(-20, -50);
+  ctx.lineTo(20, -50);
+  ctx.lineTo(50, 20);
+  ctx.closePath();
+  ctx.fill();
+  ctx.restore();
 }
-function spawn() {
-  const shape=shapes[Math.floor(Math.random()*shapes.length)];
-  current={shape:shape, row:0, col:Math.floor(COLS/2)-Math.ceil(shape[0].length/2)};
-  if(collision(current.shape, current.row, current.col)){
-    clearInterval(gameInterval); alert('¡Fin!'); gameOver=true;
-  }
+
+// Animación
+function animate() {
+  ctx.fillStyle = 'rgba(34,34,34,0.2)'; // Fondo con transparencia para efecto de "movimiento"
+  ctx.fillRect(0, 0, width, height);
+
+  // Cambiar color del pie
+  hue = (hue + 1) % 360;
+  const color = `hsl(${hue}, 100%, 50%)`;
+
+  // Dibujar el pie que sigue el mouse
+  drawPie(mouseX, mouseY, color);
+
+  requestAnimationFrame(animate);
 }
-function collision(shape,r,c){
-  for(let y=0; y<shape.length; y++){
-    for(let x=0; x<shape[y].length; x++){
-      if(shape[y][x]){
-        let ny=r+y, nx=c+x;
-        if(ny>=ROWS || nx<0 || nx>=COLS || board[ny][nx]) return true;
-      }
-    }
-  }
-  return false;
-}
-function merge() {
-  for(let y=0; y<current.shape.length; y++){
-    for(let x=0; x<current.shape[y].length; x++){
-      if(current.shape[y][x]){
-        board[current.row+y][current.col+x]=1;
-      }
-    }
-  }
-  clearLines();
-  spawn();
-}
-function clearLines() {
-  for(let r=ROWS-1; r>=0; r--) {
-    if(board[r].every(c=>c===1)){
-      board.splice(r,1);
-      board.unshift(Array(COLS).fill(0));
-      score+=100;
-      document.getElementById('score').innerText='Puntos: '+score;
-    }
-  }
-}
-function move(dir) {
-  if(gameOver) return;
-  const newCol=current.col+dir;
-  if(!collision(current.shape,current.row,newCol)){
-    current.col=newCol;
-  }
-}
-function rotate() {
-  if(gameOver) return;
-  const rotated=rotateShape(current.shape);
-  if(!collision(rotated,current.row,current.col)){
-    current.shape=rotated;
-  }
-}
-function rotateShape(shape) {
-  const r=shape.length, c=shape[0].length;
-  const newShape=[];
-  for(let x=0; x<c; x++){
-    newShape[x]=[];
-    for(let y=r-1; y>=0; y--){
-      newShape[x][r-1-y]=shape[y][x];
-    }
-  }
-  return newShape;
-}
-function drop() {
-  if(gameOver) return;
-  while(!collision(current.shape,current.row+1,current.col)){
-    current.row++;
-  }
-  merge();
-}
-function update() {
-  if(collision(current.shape,current.row+1,current.col)){
-    merge();
-  } else {
-    current.row++;
-  }
-  draw();
-}
-function draw() {
-  ctx.clearRect(0,0,c.width,c.height);
-  // tablero
-  for(let y=0; y<ROWS; y++){
-    for(let x=0; x<COLS; x++){
-      if(board[y][x]){
-        ctx.fillStyle='lime';
-        ctx.fillRect(x*BLOCK,y*BLOCK,BLOCK,BLOCK);
-        ctx.strokeStyle='black';
-        ctx.strokeRect(x*BLOCK,y*BLOCK,BLOCK,BLOCK);
-      }
-    }
-  }
-  // pieza actual
-  for(let y=0; y<current.shape.length; y++){
-    for(let x=0; x<current.shape[y].length; x++){
-      if(current.shape[y][x]){
-        ctx.fillStyle='lime';
-        ctx.fillRect((current.col+x)*BLOCK,(current.row+y)*BLOCK,BLOCK,BLOCK);
-        ctx.strokeStyle='black';
-        ctx.strokeRect((current.col+x)*BLOCK,(current.row+y)*BLOCK,BLOCK,BLOCK);
-      }
-    }
-  }
-}
-init();
+
+animate();
 </script>
 </body>
 </html>
