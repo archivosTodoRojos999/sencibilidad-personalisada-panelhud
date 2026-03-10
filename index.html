@@ -6,7 +6,6 @@
 
 <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
 <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
-<script src="https://unpkg.com/react-router-dom/umd/react-router-dom.min.js"></script>
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
@@ -18,15 +17,7 @@
 
 <script type="text/babel">
 
-const { Link, HashRouter } = ReactRouterDOM;
-
-function createPageUrl(page){
-  return "#" + page;
-}
-
 function Layout({ children, currentPageName }) {
-
-  const isGame = currentPageName === "RacingGame" || currentPageName === "ZombieGame";
 
   return (
     <div className="relative w-full h-screen bg-black overflow-hidden">
@@ -34,8 +25,8 @@ function Layout({ children, currentPageName }) {
       {/* Nav bar */}
       <div className="absolute top-0 left-0 right-0 z-50 flex justify-center gap-3 p-2 bg-black/60 backdrop-blur-sm border-b border-white/10">
 
-        <Link
-          to={createPageUrl("RacingGame")}
+        <a
+          href="#RacingGame"
           className={`px-4 py-1.5 text-xs font-bold uppercase tracking-widest rounded transition-all duration-150 ${
             currentPageName === "RacingGame"
               ? "bg-cyan-400 text-black"
@@ -43,10 +34,10 @@ function Layout({ children, currentPageName }) {
           }`}
         >
           🏎️ Neon Racer
-        </Link>
+        </a>
 
-        <Link
-          to={createPageUrl("ZombieGame")}
+        <a
+          href="#ZombieGame"
           className={`px-4 py-1.5 text-xs font-bold uppercase tracking-widest rounded transition-all duration-150 ${
             currentPageName === "ZombieGame"
               ? "bg-red-600 text-white"
@@ -54,10 +45,10 @@ function Layout({ children, currentPageName }) {
           }`}
         >
           🧟 Dead Zone
-        </Link>
+        </a>
 
-        <Link
-          to={createPageUrl("MinecraftGame")}
+        <a
+          href="#MinecraftGame"
           className={`px-4 py-1.5 text-xs font-bold uppercase tracking-widest rounded transition-all duration-150 ${
             currentPageName === "MinecraftGame"
               ? "bg-green-600 text-white"
@@ -65,7 +56,7 @@ function Layout({ children, currentPageName }) {
           }`}
         >
           ⛏️ VoxelCraft
-        </Link>
+        </a>
 
       </div>
 
@@ -79,14 +70,16 @@ function Layout({ children, currentPageName }) {
 }
 
 function App(){
+
+  const page = window.location.hash.replace("#","") || "RacingGame";
+
   return (
-    <HashRouter>
-      <Layout currentPageName="RacingGame">
-        <div className="text-white text-center mt-20">
-          <h1>Game Page</h1>
-        </div>
-      </Layout>
-    </HashRouter>
+    <Layout currentPageName={page}>
+      <div className="text-white text-center mt-20">
+        <h1>{page}</h1>
+        <p>Juego cargado</p>
+      </div>
+    </Layout>
   )
 }
 
