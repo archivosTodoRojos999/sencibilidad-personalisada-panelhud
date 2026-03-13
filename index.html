@@ -5,84 +5,128 @@
 <title>Sobrevivir a la Escuela Marcelino Blanco</title>
 
 <style>
+
 body{
 font-family: Arial;
-background: linear-gradient(135deg,#4facfe,#00f2fe);
+background:#111;
+color:white;
 text-align:center;
 margin:0;
-color:white;
 }
 
-header{
-background:#222;
+h1{
 padding:20px;
 }
 
-video{
-width:70%;
-max-width:700px;
-margin-top:20px;
-border-radius:12px;
+#video{
+width:800px;
+max-width:90%;
+margin:auto;
+position:relative;
+}
+
+#imagen{
+width:100%;
+height:450px;
+object-fit:cover;
+border-radius:10px;
+}
+
+#subtitulo{
+position:absolute;
+bottom:20px;
+left:0;
+right:0;
+font-size:22px;
+background:rgba(0,0,0,0.5);
+padding:10px;
 }
 
 button{
+margin-top:20px;
 padding:12px 20px;
-font-size:16px;
+font-size:18px;
 border:none;
 border-radius:8px;
-background:#ffcc00;
+background:#00c3ff;
 cursor:pointer;
-margin-top:20px;
 }
 
-button:hover{
-background:#ffaa00;
-}
 </style>
+
 </head>
 
 <body>
 
-<header>
 <h1>¡Sobrevivir a la Escuela Marcelino Blanco!</h1>
-<p>Video de bienvenida</p>
-</header>
 
-<!-- Video -->
-<video controls>
-<source src="video.mp4" type="video/mp4">
-Tu navegador no soporta video
-</video>
+<div id="video">
 
-<br>
+<img id="imagen" src="img1.jpg">
 
-<button onclick="hablar()">▶ Escuchar Presentación</button>
+<div id="subtitulo">
+Presiona iniciar para comenzar el video
+</div>
+
+</div>
+
+<button onclick="iniciar()">▶ Iniciar video</button>
 
 <script>
-function hablar(){
 
-let texto = `
-Hola chicos, bienvenidos a la escuela Marcelino Blanco.
-Soy Luciano Sala y voy a ayudarlos a empezar este nuevo año.
+let imagenes=[
+"img1.jpg",
+"img2.jpg",
+"img3.jpg",
+"img4.jpg",
+"img5.jpg"
+];
 
-La escuela es como un juego.
-Van a encontrar desafíos, nuevos amigos y muchas cosas para aprender.
+let textos=[
 
-No tengan miedo de preguntar.
-Trabajen en equipo y no se rindan.
+"Hola chicos, bienvenidos a la escuela Marcelino Blanco. Soy Luciano Sala y estoy aquí para ayudarlos a comenzar este nuevo año.",
 
-Recuerden: la escuela es un lugar para aprender, crecer y divertirse.
+"La escuela es como un juego. Tendrán desafíos, harán amigos y aprenderán muchas cosas nuevas.",
 
-Buena suerte chicos.
-Vamos a hacer que este año sea inolvidable.
-`;
+"No se preocupen si al principio no saben todo. Eso es parte de estar en primer año.",
 
-let voz = new SpeechSynthesisUtterance(texto);
-voz.lang = "es-ES";
+"Algunos consejos para sobrevivir: no tengan miedo de preguntar, hagan amigos y trabajen en equipo.",
+
+"Recuerden: la escuela es un lugar para aprender, crecer y divertirse.",
+
+"¡Buena suerte chicos! Vamos a hacer que este año sea inolvidable."
+];
+
+let i=0;
+
+function iniciar(){
+
+cambiarImagen();
+
+let voz=new SpeechSynthesisUtterance(textos.join(". "));
+voz.lang="es-ES";
+voz.rate=0.95;
 
 speechSynthesis.speak(voz);
 
 }
+
+function cambiarImagen(){
+
+document.getElementById("imagen").src=imagenes[i];
+
+document.getElementById("subtitulo").innerText=textos[i] || "";
+
+i++;
+
+if(i<imagenes.length){
+
+setTimeout(cambiarImagen,3000);
+
+}
+
+}
+
 </script>
 
 </body>
