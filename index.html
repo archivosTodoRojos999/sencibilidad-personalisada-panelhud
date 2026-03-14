@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Cyber Hacker Simulation</title>
+<title>Military Cyber System</title>
 
 <style>
 
@@ -12,6 +12,46 @@ background:black;
 color:#00ff9c;
 font-family:monospace;
 overflow:hidden;
+}
+
+/* LOGIN */
+
+#login{
+position:absolute;
+top:0;
+left:0;
+width:100%;
+height:100%;
+display:flex;
+flex-direction:column;
+justify-content:center;
+align-items:center;
+background:black;
+z-index:10;
+}
+
+input{
+background:black;
+border:2px solid #00ff9c;
+color:#00ff9c;
+padding:10px;
+font-size:20px;
+text-align:center;
+}
+
+button{
+background:black;
+border:2px solid #00ff9c;
+color:#00ff9c;
+padding:10px 20px;
+margin-top:10px;
+cursor:pointer;
+font-family:monospace;
+}
+
+button:hover{
+background:#00ff9c;
+color:black;
 }
 
 /* MATRIX */
@@ -38,6 +78,15 @@ bottom:20px;
 right:20px;
 width:45%;
 font-size:18px;
+}
+
+/* PASSWORD CRACK */
+
+#passwords{
+position:absolute;
+top:20px;
+left:20px;
+font-size:16px;
 color:#00ffaa;
 }
 
@@ -55,23 +104,35 @@ background-image:url("https://upload.wikimedia.org/wikipedia/commons/8/80/World_
 background-size:cover;
 }
 
-/* ALERTA */
+/* POINTS */
 
-#alert{
-display:none;
+.point{
 position:absolute;
-top:0;
-left:0;
-width:100%;
-height:100%;
-background:rgba(255,0,0,0.15);
-animation:blink 1s infinite;
+width:6px;
+height:6px;
+background:#00ff9c;
+border-radius:50%;
+box-shadow:0 0 10px #00ff9c;
 }
 
-@keyframes blink{
-0%{opacity:0.1}
-50%{opacity:0.4}
-100%{opacity:0.1}
+/* LINES */
+
+.hackLine{
+position:absolute;
+height:2px;
+background:#00ff9c;
+box-shadow:0 0 10px #00ff9c;
+}
+
+/* SATELLITES */
+
+.satellite{
+position:absolute;
+width:8px;
+height:8px;
+background:white;
+border-radius:50%;
+box-shadow:0 0 10px white;
 }
 
 /* ACCESS PANEL */
@@ -84,7 +145,7 @@ left:0;
 width:100%;
 height:100%;
 text-align:center;
-padding-top:15vh;
+padding-top:20vh;
 font-size:40px;
 }
 
@@ -107,7 +168,6 @@ position:absolute;
 border:2px solid #00ff9c;
 width:30%;
 height:25%;
-background:black;
 }
 
 #cam1{top:5%;left:5%}
@@ -125,68 +185,29 @@ width:30%;
 text-align:center;
 }
 
-button{
-background:black;
-color:#00ff9c;
-border:2px solid #00ff9c;
-padding:10px 20px;
-margin:10px;
-cursor:pointer;
-font-family:monospace;
-}
-
-button:hover{
-background:#00ff9c;
-color:black;
-}
-
-/* MAP POINTS */
-
-.point{
-position:absolute;
-width:6px;
-height:6px;
-background:#00ff9c;
-border-radius:50%;
-box-shadow:0 0 10px #00ff9c;
-}
-
-/* HACK LINES */
-
-.hackLine{
-position:absolute;
-height:2px;
-background:#00ff9c;
-box-shadow:0 0 10px #00ff9c;
-}
-
-/* SATELLITES */
-
-.satellite{
-position:absolute;
-width:8px;
-height:8px;
-background:white;
-border-radius:50%;
-box-shadow:0 0 10px white;
-}
-
 </style>
 </head>
 
 <body>
 
+<div id="login">
+<h2>ENTER ACCESS CODE</h2>
+<input id="codeInput" placeholder="Access code">
+<button onclick="checkCode()">ENTER</button>
+</div>
+
 <canvas id="matrix"></canvas>
 
-<div id="map"></div>
-<div id="alert"></div>
+<div id="passwords"></div>
 
 <div id="terminal"></div>
 <div id="terminal2"></div>
 
+<div id="map"></div>
+
 <div id="panel">
 ⚠ ACCESS GRANTED ⚠
-<br><br>
+<br>
 Opening Command Center...
 </div>
 
@@ -198,22 +219,37 @@ Opening Command Center...
 <div class="camera" id="cam4">CAMERA 04</div>
 
 <div id="missilePanel">
-
-<h2>GLOBAL DEFENSE PANEL</h2>
-
-<button onclick="fakeLaunch()">LAUNCH MISSILE</button>
-<button onclick="fakeLaunch()">ARM SYSTEM</button>
-<button onclick="fakeLaunch()">TARGET LOCK</button>
-
+<h2>GLOBAL DEFENSE</h2>
+<button onclick="fakeLaunch()">LAUNCH</button>
+<button onclick="fakeLaunch()">ARM</button>
+<button onclick="fakeLaunch()">LOCK TARGET</button>
 <p id="status"></p>
-
 </div>
 
 </div>
 
 <script>
 
-/* MATRIX RAIN */
+/* LOGIN */
+
+function checkCode(){
+
+let code=document.getElementById("codeInput").value
+
+if(code==="999"){
+
+document.getElementById("login").style.display="none"
+startSystem()
+
+}else{
+
+alert("ACCESS DENIED")
+
+}
+
+}
+
+/* MATRIX */
 
 const canvas=document.getElementById("matrix")
 const ctx=canvas.getContext("2d")
@@ -221,7 +257,7 @@ const ctx=canvas.getContext("2d")
 canvas.height=window.innerHeight
 canvas.width=window.innerWidth
 
-const letters="01アカサタナハマヤラワABCDEFGHIJKLMNOPQRSTUVWXYZ#$%&"
+const letters="01ABCDEFGHIJKLMNOPQRSTUVWXYZ#$%&"
 const fontSize=16
 const columns=canvas.width/fontSize
 const drops=[]
@@ -254,17 +290,25 @@ setInterval(draw,35)
 
 /* TERMINAL */
 
+function startSystem(){
+
+typeLine()
+setInterval(showPasswords,200)
+
+setTimeout(startMap,8000)
+
+}
+
+/* TERMINAL TEXT */
+
 const terminal=document.getElementById("terminal")
 
 const lines=[
 "Connecting to remote server...",
 "Bypassing firewall...",
-"Injecting payload...",
-"Decrypting security layer...",
-"Accessing private database...",
-"Downloading files...",
-"Removing traces...",
-"Finalizing connection..."
+"Decrypting system...",
+"Accessing database...",
+"Downloading files..."
 ]
 
 let lineIndex=0
@@ -272,20 +316,13 @@ let charIndex=0
 
 function typeLine(){
 
-if(lineIndex>=lines.length){
-
-setTimeout(startMapHack,2000)
-return
-
-}
+if(lineIndex>=lines.length) return
 
 let current=lines[lineIndex]
 
 terminal.innerHTML+=current.charAt(charIndex)
 
 charIndex++
-
-clickSound()
 
 if(charIndex<current.length){
 
@@ -302,7 +339,25 @@ setTimeout(typeLine,500)
 
 }
 
-setTimeout(typeLine,2000)
+/* PASSWORD CRACK */
+
+const passwords=document.getElementById("passwords")
+
+function showPasswords(){
+
+let chars="abcdefghijklmnopqrstuvwxyz0123456789"
+
+let pass=""
+
+for(let i=0;i<8;i++){
+
+pass+=chars[Math.floor(Math.random()*chars.length)]
+
+}
+
+passwords.innerHTML="CRACKING PASSWORD: "+pass
+
+}
 
 /* IP CONNECTIONS */
 
@@ -325,19 +380,20 @@ if(terminal2.innerHTML.length>2000) terminal2.innerHTML=""
 
 },600)
 
-/* MAP HACK */
+/* MAP */
 
-function startMapHack(){
+function startMap(){
 
 document.getElementById("map").style.display="block"
-document.getElementById("alert").style.display="block"
 
 for(let i=0;i<30;i++){
 
 let p=document.createElement("div")
 p.className="point"
+
 p.style.left=Math.random()*100+"%"
 p.style.top=Math.random()*100+"%"
+
 document.body.appendChild(p)
 
 }
@@ -352,9 +408,9 @@ document.getElementById("panel").style.display="block"
 
 setTimeout(()=>{
 document.getElementById("controlRoom").style.display="block"
-},4000)
+},3000)
 
-},6000)
+},5000)
 
 }
 
@@ -390,6 +446,7 @@ function createSatellite(){
 
 let sat=document.createElement("div")
 sat.className="satellite"
+
 document.body.appendChild(sat)
 
 let angle=0
@@ -413,51 +470,11 @@ move()
 
 }
 
-/* SOUND */
-
-const audioCtx=new(window.AudioContext||window.webkitAudioContext)()
-
-function clickSound(){
-
-const osc=audioCtx.createOscillator()
-const gain=audioCtx.createGain()
-
-osc.frequency.value=150+Math.random()*600
-osc.type=["square","triangle","sawtooth"][Math.floor(Math.random()*3)]
-
-osc.connect(gain)
-gain.connect(audioCtx.destination)
-
-gain.gain.value=0.03
-
-osc.start()
-osc.stop(audioCtx.currentTime+0.02)
-
-}
-
-function typingBurst(){
-
-let count=0
-
-let interval=setInterval(()=>{
-
-clickSound()
-
-count++
-
-if(count>15) clearInterval(interval)
-
-},30)
-
-}
-
-setInterval(typingBurst,2000)
-
-/* MISSILE BUTTON */
+/* BUTTON */
 
 function fakeLaunch(){
 
-document.getElementById("status").innerText="TARGET LOCKED — SIMULATION ONLY"
+document.getElementById("status").innerText="SYSTEM READY (SIMULATION)"
 
 }
 
