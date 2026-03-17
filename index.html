@@ -23,38 +23,6 @@ justify-content:center;
 align-items:center;
 }
 
-/* INTRO */
-
-#intro{
-position:fixed;
-top:0;
-left:0;
-width:100%;
-height:100%;
-background:black;
-display:flex;
-align-items:center;
-justify-content:center;
-flex-direction:column;
-z-index:10;
-animation:desaparecer 3s 3s forwards;
-}
-
-#logoIntro{
-font-size:42px;
-font-weight:bold;
-animation:zoomLogo 3s;
-}
-
-@keyframes zoomLogo{
-0%{transform:scale(0.3);opacity:0}
-100%{transform:scale(1);opacity:1}
-}
-
-@keyframes desaparecer{
-to{opacity:0;visibility:hidden}
-}
-
 h1{
 padding:10px;
 font-size:34px;
@@ -75,7 +43,7 @@ height:450px;
 object-fit:cover;
 border-radius:12px;
 box-shadow:0 10px 30px rgba(0,0,0,0.6);
-transition:opacity 1s, transform 6s;
+transition:opacity 1s;
 }
 
 #subtitulo{
@@ -89,7 +57,7 @@ padding:12px;
 border-radius:8px;
 }
 
-/* LOGO ARREGLADO */
+/* LOGO */
 
 #logoEscuela{
 position:absolute;
@@ -101,14 +69,15 @@ gap:10px;
 background:rgba(0,0,0,0.6);
 padding:6px 12px;
 border-radius:12px;
-box-shadow:0 4px 10px rgba(0,0,0,0.5);
 }
 
 #logoEscuela img{
-width:45px;
-height:45px;
-object-fit:cover;
-border-radius:8px;
+width:55px;
+height:55px;
+object-fit:contain;
+background:white;
+padding:3px;
+border-radius:50%;
 }
 
 #logoEscuela span{
@@ -128,7 +97,6 @@ background:linear-gradient(45deg,#00c3ff,#4facfe);
 cursor:pointer;
 color:white;
 font-weight:bold;
-box-shadow:0 5px 15px rgba(0,0,0,0.4);
 }
 
 button:hover{
@@ -136,23 +104,16 @@ transform:scale(1.05);
 }
 
 </style>
-
 </head>
 
 <body>
-
-<!-- INTRO -->
-<div id="intro">
-<div id="logoIntro">🏫 Escuela Marcelino Blanco</div>
-<p>Presenta</p>
-</div>
 
 <h1>¡Sobrevivir a la Escuela Marcelino Blanco!</h1>
 
 <div id="video">
 
 <div id="logoEscuela">
-<img src="logo.png">
+<img src="logo-marcelino.png">
 <span>Marcelino Blanco</span>
 </div>
 
@@ -173,14 +134,12 @@ Presiona iniciar para comenzar el video
 <script>
 
 let imagenes=[
-
 "https://images.unsplash.com/photo-1580582932707-520aed937b7b",
 "https://images.unsplash.com/photo-1596495578065-6e0763fa1178",
 "https://images.unsplash.com/photo-1503676260728-1c00da094a0b",
 "https://images.unsplash.com/photo-1509062522246-3755977927d7",
 "https://images.unsplash.com/photo-1523240795612-9a054b0db644",
 "https://images.unsplash.com/photo-1577896851231-70ef18881754"
-
 ];
 
 let textos=[
@@ -201,14 +160,14 @@ let textos=[
 
 let i=0;
 
+/* INICIAR VIDEO */
+
 function iniciar(){
 
 let musica=document.getElementById("musica");
 
 musica.volume=0;
 musica.play();
-
-/* subir volumen suave */
 
 let subirVolumen=setInterval(()=>{
 if(musica.volume<0.25){
@@ -218,11 +177,14 @@ clearInterval(subirVolumen);
 }
 },200);
 
-cambiarImagen();
+i=0;
 
-leerTodo();
+cambiarImagen();
+leerTexto();
 
 }
+
+/* CAMBIO DE IMAGEN CADA 3 SEGUNDOS */
 
 function cambiarImagen(){
 
@@ -233,44 +195,69 @@ img.style.opacity=0;
 setTimeout(()=>{
 
 img.src=imagenes[i];
-
 document.getElementById("subtitulo").innerText=textos[i];
 
 img.style.opacity=1;
 
-img.style.transform="scale(1.1)";
-
-setTimeout(()=>{
-img.style.transform="scale(1)";
-},2500);
+},400);
 
 i++;
 
 if(i<imagenes.length){
-
-setTimeout(cambiarImagen,5000);
+setTimeout(cambiarImagen,3000);
+}
 
 }
 
-},500);
+/* VOZ SIN DESINCRONIZARSE */
 
-}
+let indiceVoz=0;
 
-function leerTodo(){
+function leerTexto(){
+
+if(indiceVoz>=textos.length) return;
 
 speechSynthesis.cancel();
 
-let textoCompleto = textos.join(" ");
-
-let voz=new SpeechSynthesisUtterance(textoCompleto);
+let voz=new SpeechSynthesisUtterance(textos[indiceVoz]);
 
 voz.lang="es-ES";
+voz.rate=0.95;
+voz.pitch=0.5;
 
-/* VOZ MÁS FLUIDA */
+let voces=speechSynthesis.getVoices();
 
-voz.rate=0.85;
-voz.pitch=1;
-voz.volume=1;
+for(let v of voces){
+
+let nombre=v.name.toLowerCase();
+
+if(
+v.lang.includes("es") &&
+(
+nombre.includes("pablo") ||
+nombre.includes("jorge") ||
+nombre.includes("diego") ||
+nombre.includes("hector") ||
+nombre.includes("carlos")
+)
+){
+voz.voice=v;
+break;
+}
+
+}
+
+if(!voz.voice){
+voz.voice=voces.find(v=>v.lang.includes("es"));
+}
+
+voz.onend=function(){
+
+indiceVoz++;
+
+setTimeout(leerTexto,300);
+
+};
 
 speechSynthesis.speak(voz);
 
