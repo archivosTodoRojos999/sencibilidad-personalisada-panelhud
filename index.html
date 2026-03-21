@@ -2,223 +2,130 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Escuela Marcelino H Blanco</title>
-
+<title>Juego de Auto de Carrera</title>
 <style>
-
-html,body{
-margin:0;
-height:100%;
-overflow:hidden;
-font-family:Arial;
-background:black;
-color:white;
-}
-
-#video{
-position:relative;
-width:100%;
-height:100vh;
-}
-
-#imagen{
-width:100%;
-height:100%;
-object-fit:cover;
-transition:opacity 1.5s, transform 6s;
-}
-
-#overlay{
-position:absolute;
-top:0;
-left:0;
-width:100%;
-height:100%;
-background:rgba(0,0,0,0.35);
-}
-
-#titulo{
-position:absolute;
-top:40px;
-left:50%;
-transform:translateX(-50%);
-font-size:40px;
-font-weight:bold;
-letter-spacing:2px;
-}
-
-#subtitulo{
-position:absolute;
-bottom:60px;
-left:50%;
-transform:translateX(-50%);
-width:70%;
-text-align:center;
-font-size:26px;
-background:rgba(0,0,0,0.6);
-padding:15px;
-border-radius:10px;
-}
-
-#logo{
-position:absolute;
-top:20px;
-left:20px;
-display:flex;
-align-items:center;
-gap:10px;
-background:rgba(0,0,0,0.6);
-padding:8px 14px;
-border-radius:14px;
-}
-
-#logo img{
-width:70px;
-height:70px;
-object-fit:contain;
-background:white;
-padding:5px;
-border-radius:50%;
-}
-
-#logo span{
-font-weight:bold;
-}
-
-#boton{
-position:absolute;
-bottom:20px;
-right:20px;
-padding:14px 24px;
-font-size:18px;
-border:none;
-border-radius:10px;
-background:#00c3ff;
-color:white;
-cursor:pointer;
-}
-
+    body {
+        margin: 0;
+        overflow: hidden;
+        background: black;
+    }
+    canvas {
+        display: block;
+        margin: auto;
+        background: black;
+    }
 </style>
 </head>
-
 <body>
 
-<div id="video">
-
-<img id="imagen" src="https://images.unsplash.com/photo-1580582932707-520aed937b7b">
-
-<div id="overlay"></div>
-
-<div id="titulo">
-Escuela Marcelino H Blanco
-</div>
-
-<div id="logo">
-<img src="logo.png">
-<span>La Paz</span>
-</div>
-
-<div id="subtitulo">
-Presiona iniciar para comenzar
-</div>
-
-<button id="boton" onclick="iniciar()">▶ Iniciar</button>
-
-</div>
-
-<audio id="musica" loop>
-<source src="musica.mp3" type="audio/mpeg">
-</audio>
+<canvas id="juego" width="800" height="600"></canvas>
 
 <script>
+// ================== CÓDIGO ORIGINAL (NO BORRADO) ==================
+/*
+import pygame
+import sys
 
-let imagenes=[
-"https://images.unsplash.com/photo-1580582932707-520aed937b7b",
-"https://images.unsplash.com/photo-1596495578065-6e0763fa1178",
-"https://images.unsplash.com/photo-1503676260728-1c00da094a0b",
-"https://images.unsplash.com/photo-1509062522246-3755977927d7",
-"https://images.unsplash.com/photo-1523240795612-9a054b0db644"
-];
+# Inicializar pygame
+pygame.init()
 
-/* PROMPT PARA ALUMNOS DE 1° AÑO */
+# Crear ventana
+ANCHO = 800
+ALTO = 600
+ventana = pygame.display.set_mode((ANCHO, ALTO))
+pygame.display.set_caption("Juego de Auto de Carrera")
 
-let textos=[
+# Colores
+NEGRO = (0, 0, 0)
+BLANCO = (255, 255, 255)
+ROJO = (255, 0, 0)
 
-"Hola chicos. Bienvenidos a la Escuela Número 4 042 Marcelino H Blanco. Si estás en primer año de secundaria, este es el comienzo de una nueva etapa en tu vida.",
+# Auto
+auto_ancho = 50
+auto_alto = 80
+x = ANCHO // 2 - auto_ancho // 2
+y = ALTO - auto_alto - 10
+velocidad = 5
 
-"Sabemos que al principio todo puede parecer nuevo. Nuevas materias, nuevos profesores y nuevos compañeros.",
+# Bucle del juego
+reloj = pygame.time.Clock()
 
-"Pero no se preocupen. Poco a poco van a ir aprendiendo, adaptándose y descubriendo todo lo que esta escuela tiene para ofrecer.",
+while True:
+    for evento in pygame.event.get():
+        if evento.type == pygame.QUIT:
+            pygame.quit()
+            sys.exit()
 
-"Aquí van a hacer nuevos amigos, aprender cosas interesantes y vivir muchas experiencias que los van a ayudar a crecer.",
+    # Movimiento del auto
+    teclas = pygame.key.get_pressed()
+    if teclas[pygame.K_LEFT] and x > 0:
+        x -= velocidad
+    if teclas[pygame.K_RIGHT] and x < ANCHO - auto_ancho:
+        x += velocidad
+    if teclas[pygame.K_UP] and y > 0:
+        y -= velocidad
+    if teclas[pygame.K_DOWN] and y < ALTO - auto_alto:
+        y += velocidad
 
-"Un consejo muy importante: no tengan miedo de preguntar, participar en clase y trabajar en equipo con sus compañeros.",
+    # Dibujar
+    ventana.fill(NEGRO)
+    pygame.draw.rect(ventana, ROJO, (x, y, auto_ancho, auto_alto))
+    pygame.display.update()
 
-"La secundaria es un lugar para aprender, pero también para compartir, divertirse y prepararse para el futuro.",
+    reloj.tick(60)
+*/
+// ================================================================
 
-"Les deseamos un gran comienzo en primer año. Bienvenidos a la Escuela Marcelino H Blanco. ¡Que tengan un excelente año!"
+// Configuración
+const canvas = document.getElementById("juego");
+const ctx = canvas.getContext("2d");
 
-];
+const ANCHO = 800;
+const ALTO = 600;
 
-let i=0;
+// Colores
+const NEGRO = "black";
+const ROJO = "red";
 
-function iniciar(){
+// Auto
+let auto_ancho = 50;
+let auto_alto = 80;
+let x = ANCHO / 2 - auto_ancho / 2;
+let y = ALTO - auto_alto - 10;
+let velocidad = 5;
 
-document.getElementById("boton").style.display="none";
+// Controles
+let teclas = {};
 
-let musica=document.getElementById("musica");
-musica.volume=0.25;
-musica.play();
+document.addEventListener("keydown", (e) => {
+    teclas[e.key] = true;
+});
 
-escena();
+document.addEventListener("keyup", (e) => {
+    teclas[e.key] = false;
+});
 
+// Bucle del juego
+function juego() {
+
+    // Movimiento
+    if (teclas["ArrowLeft"] && x > 0) x -= velocidad;
+    if (teclas["ArrowRight"] && x < ANCHO - auto_ancho) x += velocidad;
+    if (teclas["ArrowUp"] && y > 0) y -= velocidad;
+    if (teclas["ArrowDown"] && y < ALTO - auto_alto) y += velocidad;
+
+    // Dibujar
+    ctx.fillStyle = NEGRO;
+    ctx.fillRect(0, 0, ANCHO, ALTO);
+
+    ctx.fillStyle = ROJO;
+    ctx.fillRect(x, y, auto_ancho, auto_alto);
+
+    requestAnimationFrame(juego);
 }
 
-function escena(){
-
-if(i>=textos.length)return;
-
-let img=document.getElementById("imagen");
-let subt=document.getElementById("subtitulo");
-
-img.style.opacity=0;
-
-setTimeout(()=>{
-
-img.src=imagenes[i];
-img.style.opacity=1;
-img.style.transform="scale(1.08)";
-
-subt.innerText=textos[i];
-
-leer(textos[i]);
-
-},800);
-
-}
-
-function leer(texto){
-
-speechSynthesis.cancel();
-
-let voz=new SpeechSynthesisUtterance(texto);
-
-voz.lang="es-ES";
-voz.rate=1;
-voz.pitch=1;
-
-voz.onend=function(){
-
-i++;
-
-setTimeout(escena,1000);
-
-};
-
-speechSynthesis.speak(voz);
-
-}
-
+// Iniciar juego
+juego();
 </script>
 
 </body>
