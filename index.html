@@ -2,7 +2,17 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>ENDEX UI ULTRA</title>
+
+<!-- 🔒 Sin zoom -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+<!-- 📱 MODO APP -->
+<meta name="theme-color" content="#000000">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<link rel="manifest" href="manifest.json">
+
+<title>ENDEX UI FINAL</title>
 
 <style>
 body {
@@ -26,47 +36,56 @@ body {
 }
 
 #login input {
-    padding: 10px;
+    padding: 12px;
+    width: 80%;
     background: black;
     border: 1px solid #00ffcc;
     color: #00ffcc;
+    font-size: 16px;
 }
 
 /* APP */
 .container {
     display: none;
+    flex-direction: column;
     height: 100vh;
 }
 
-/* SIDEBAR */
+/* MENU MOBILE */
 .sidebar {
-    width: 220px;
-    background: #0a0a0a;
-    border-right: 1px solid #00ffcc33;
-    padding: 10px;
+    display: flex;
+    overflow-x: auto;
+    border-bottom: 1px solid #00ffcc33;
 }
 
 .menu-item {
-    padding: 8px;
+    padding: 12px;
+    min-width: 90px;
+    text-align: center;
+    border-right: 1px solid #00ffcc22;
     cursor: pointer;
+    font-size: 14px;
 }
 
-.menu-item:hover {
+.menu-item:active {
     background: #00ffcc22;
 }
 
 /* MAIN */
 .main {
     flex: 1;
-    padding: 10px;
+    padding: 8px;
+    display: flex;
+    flex-direction: column;
 }
 
 /* TERMINAL */
 .terminal {
-    height: 50%;
+    flex: 1;
     overflow-y: auto;
     border: 1px solid #00ffcc33;
-    padding: 10px;
+    padding: 8px;
+    font-size: 13px;
 }
 
 /* INPUT */
@@ -80,13 +99,14 @@ input {
     background: black;
     border: none;
     color: #00ffcc;
-    padding: 10px;
+    padding: 12px;
+    font-size: 14px;
     outline: none;
 }
 
 /* PROGRESS */
 .progress {
-    height: 8px;
+    height: 6px;
     background: #111;
 }
 
@@ -99,23 +119,24 @@ input {
 /* WINDOW */
 .window {
     position: absolute;
-    top: 50px;
-    left: 300px;
-    width: 300px;
-    height: 200px;
+    top: 20%;
+    left: 10%;
+    width: 80%;
+    height: 150px;
     background: #000;
     border: 1px solid #00ffcc;
     padding: 10px;
+    font-size: 12px;
 }
 
 /* RADAR */
 .radar {
-    width: 200px;
-    height: 200px;
+    width: 140px;
+    height: 140px;
     border: 1px solid #00ffcc;
     border-radius: 50%;
     position: relative;
-    margin-top: 10px;
+    margin: 10px auto;
 }
 
 .line {
@@ -152,11 +173,11 @@ input {
 <div class="container" id="app">
 
     <div class="sidebar">
-        <div class="menu-item" onclick="runScan()">▶ Scan</div>
-        <div class="menu-item" onclick="hack()">▶ Hack</div>
-        <div class="menu-item" onclick="openWindow()">▶ Open Window</div>
-        <div class="menu-item" onclick="showRadar()">▶ Radar</div>
-        <div class="menu-item" onclick="clearTerminal()">▶ Clear</div>
+        <div class="menu-item" onclick="runScan()">Scan</div>
+        <div class="menu-item" onclick="hack()">Hack</div>
+        <div class="menu-item" onclick="openWindow()">Window</div>
+        <div class="menu-item" onclick="showRadar()">Radar</div>
+        <div class="menu-item" onclick="clearTerminal()">Clear</div>
     </div>
 
     <div class="main">
@@ -177,13 +198,24 @@ input {
 
 </div>
 
-<audio id="sound" src="https://www.soundjay.com/mechanical/keyboard-1.mp3"></audio>
+<!-- 🔊 AUDIO -->
+<audio id="sound" preload="auto">
+    <source src="https://assets.mixkit.co/sfx/preview/mixkit-fast-typing-on-a-keyboard-2546.mp3" type="audio/mpeg">
+</audio>
 
 <script>
 const terminal = document.getElementById("terminal");
 const input = document.getElementById("input");
 const bar = document.getElementById("bar");
 const sound = document.getElementById("sound");
+
+/* ACTIVAR AUDIO */
+document.body.addEventListener("click", () => {
+    sound.play().then(() => {
+        sound.pause();
+        sound.currentTime = 0;
+    }).catch(()=>{});
+}, { once: true });
 
 /* LOGIN */
 document.getElementById("pass").addEventListener("keydown", e => {
@@ -203,14 +235,20 @@ function print(text, glitch=false) {
     terminal.scrollTop = terminal.scrollHeight;
 }
 
-/* SOUND */
+/* SONIDO */
 function typeSound() {
-    sound.currentTime = 0;
-    sound.play();
+    try {
+        let s = sound.cloneNode();
+        s.volume = 0.3;
+        s.play();
+    } catch(e) {}
 }
 
-/* COMMANDS */
+/* INPUT */
 input.addEventListener("keydown", e => {
+
+    typeSound();
+
     if (e.key === "Enter") {
         let cmd = input.value;
         print(cmd);
@@ -219,6 +257,7 @@ input.addEventListener("keydown", e => {
     }
 });
 
+/* COMMANDS */
 function execute(cmd) {
     typeSound();
 
@@ -233,7 +272,7 @@ function execute(cmd) {
     else print("ERROR: command not found", true);
 }
 
-/* FUNCTIONS */
+/* FUNCIONES */
 function runScan() {
     print("Scanning system...");
     animateBar();
@@ -264,7 +303,6 @@ function animateBar() {
     }, 100);
 }
 
-/* WINDOW */
 function openWindow() {
     let win = document.createElement("div");
     win.className = "window";
@@ -272,7 +310,6 @@ function openWindow() {
     document.body.appendChild(win);
 }
 
-/* RADAR */
 function showRadar() {
     let radar = document.createElement("div");
     radar.className = "radar";
@@ -284,8 +321,13 @@ function showRadar() {
     document.getElementById("extra").appendChild(radar);
 }
 
+/* SERVICE WORKER */
+if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('sw.js');
+}
+
 /* START */
-print("ENDEX_UI ULTRA READY");
+print("ENDEX_UI FINAL READY");
 print("Type 'help'");
 </script>
 
