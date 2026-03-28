@@ -2,333 +2,167 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-
-<!-- 🔒 Sin zoom -->
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-
-<!-- 📱 MODO APP -->
-<meta name="theme-color" content="#000000">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black">
-<link rel="manifest" href="manifest.json">
-
-<title>ENDEX UI FINAL</title>
+<title>Piano PRO</title>
 
 <style>
 body {
-    margin: 0;
-    background: #050505;
-    color: #00ffcc;
-    font-family: monospace;
-    overflow: hidden;
+    text-align: center;
+    font-family: Arial;
+    background: #111;
+    color: white;
 }
 
-/* LOGIN */
-#login {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    background: black;
+h1 {
+    margin-top: 20px;
+}
+
+/* CONTENEDOR */
+.piano {
+    position: relative;
     display: flex;
     justify-content: center;
-    align-items: center;
-    flex-direction: column;
+    margin-top: 50px;
 }
 
-#login input {
-    padding: 12px;
-    width: 80%;
-    background: black;
-    border: 1px solid #00ffcc;
-    color: #00ffcc;
-    font-size: 16px;
-}
-
-/* APP */
-.container {
-    display: none;
-    flex-direction: column;
-    height: 100vh;
-}
-
-/* MENU MOBILE */
-.sidebar {
-    display: flex;
-    overflow-x: auto;
-    border-bottom: 1px solid #00ffcc33;
-}
-
-.menu-item {
-    padding: 12px;
-    min-width: 90px;
-    text-align: center;
-    border-right: 1px solid #00ffcc22;
+/* TECLAS BLANCAS */
+.tecla {
+    width: 60px;
+    height: 220px;
+    background: white;
+    border: 1px solid black;
     cursor: pointer;
-    font-size: 14px;
 }
 
-.menu-item:active {
-    background: #00ffcc22;
+.tecla:active {
+    background: #ddd;
 }
 
-/* MAIN */
-.main {
-    flex: 1;
-    padding: 8px;
-    display: flex;
-    flex-direction: column;
-}
-
-/* TERMINAL */
-.terminal {
-    flex: 1;
-    overflow-y: auto;
-    border: 1px solid #00ffcc33;
-    padding: 8px;
-    font-size: 13px;
-}
-
-/* INPUT */
-.input-area {
-    display: flex;
-    margin-top: 5px;
-}
-
-input {
-    flex: 1;
-    background: black;
-    border: none;
-    color: #00ffcc;
-    padding: 12px;
-    font-size: 14px;
-    outline: none;
-}
-
-/* PROGRESS */
-.progress {
-    height: 6px;
-    background: #111;
-}
-
-.progress-bar {
-    height: 100%;
-    width: 0%;
-    background: #00ffcc;
-}
-
-/* WINDOW */
-.window {
-    position: absolute;
-    top: 20%;
-    left: 10%;
-    width: 80%;
-    height: 150px;
-    background: #000;
-    border: 1px solid #00ffcc;
-    padding: 10px;
-    font-size: 12px;
-}
-
-/* RADAR */
-.radar {
-    width: 140px;
+/* TECLAS NEGRAS */
+.negra {
+    width: 40px;
     height: 140px;
-    border: 1px solid #00ffcc;
-    border-radius: 50%;
-    position: relative;
-    margin: 10px auto;
-}
-
-.line {
-    width: 100%;
-    height: 2px;
-    background: #00ffcc;
+    background: black;
     position: absolute;
-    top: 50%;
-    transform-origin: left;
-    animation: rotate 2s linear infinite;
+    z-index: 2;
+    cursor: pointer;
 }
 
-@keyframes rotate {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
+.negra:active {
+    background: #444;
 }
 
-/* GLITCH */
-.glitch {
-    color: #ff00ff;
+/* POSICIONES */
+#csharp { left: 155px; }
+#dsharp { left: 215px; }
+#fsharp { left: 335px; }
+#gsharp { left: 395px; }
+#asharp { left: 455px; }
+
+button {
+    margin: 10px;
+    padding: 10px;
+    font-size: 16px;
 }
 </style>
 </head>
 
 <body>
 
-<!-- LOGIN -->
-<div id="login">
-    <h2>ENDEX LOGIN</h2>
-    <input type="password" id="pass" placeholder="Enter password">
+<h1>🎹 Piano PRO</h1>
+<p>Teclado: A S D F G H J + W E T Y U</p>
+
+<button onclick="empezarGrabacion()">🔴 Grabar</button>
+<button onclick="reproducir()">▶️ Reproducir</button>
+
+<div class="piano">
+    <!-- BLANCAS -->
+    <div class="tecla" onclick="tocar('C')"></div>
+    <div class="tecla" onclick="tocar('D')"></div>
+    <div class="tecla" onclick="tocar('E')"></div>
+    <div class="tecla" onclick="tocar('F')"></div>
+    <div class="tecla" onclick="tocar('G')"></div>
+    <div class="tecla" onclick="tocar('A')"></div>
+    <div class="tecla" onclick="tocar('B')"></div>
+
+    <!-- NEGRAS -->
+    <div class="negra" id="csharp" onclick="tocar('C#')"></div>
+    <div class="negra" id="dsharp" onclick="tocar('D#')"></div>
+    <div class="negra" id="fsharp" onclick="tocar('F#')"></div>
+    <div class="negra" id="gsharp" onclick="tocar('G#')"></div>
+    <div class="negra" id="asharp" onclick="tocar('A#')"></div>
 </div>
-
-<!-- APP -->
-<div class="container" id="app">
-
-    <div class="sidebar">
-        <div class="menu-item" onclick="runScan()">Scan</div>
-        <div class="menu-item" onclick="hack()">Hack</div>
-        <div class="menu-item" onclick="openWindow()">Window</div>
-        <div class="menu-item" onclick="showRadar()">Radar</div>
-        <div class="menu-item" onclick="clearTerminal()">Clear</div>
-    </div>
-
-    <div class="main">
-
-        <div class="terminal" id="terminal"></div>
-
-        <div class="progress">
-            <div class="progress-bar" id="bar"></div>
-        </div>
-
-        <div class="input-area">
-            <input type="text" id="input" placeholder="Enter command...">
-        </div>
-
-        <div id="extra"></div>
-
-    </div>
-
-</div>
-
-<!-- 🔊 AUDIO -->
-<audio id="sound" preload="auto">
-    <source src="https://assets.mixkit.co/sfx/preview/mixkit-fast-typing-on-a-keyboard-2546.mp3" type="audio/mpeg">
-</audio>
 
 <script>
-const terminal = document.getElementById("terminal");
-const input = document.getElementById("input");
-const bar = document.getElementById("bar");
-const sound = document.getElementById("sound");
+let grabando = false;
+let grabacion = [];
+let inicioTiempo = 0;
 
-/* ACTIVAR AUDIO */
-document.body.addEventListener("click", () => {
-    sound.play().then(() => {
-        sound.pause();
-        sound.currentTime = 0;
-    }).catch(()=>{});
-}, { once: true });
+// SONIDO REAL
+function tocar(nota) {
+    const sonidos = {
+        "C": "C.mp3",
+        "C#": "Csharp.mp3",
+        "D": "D.mp3",
+        "D#": "Dsharp.mp3",
+        "E": "E.mp3",
+        "F": "F.mp3",
+        "F#": "Fsharp.mp3",
+        "G": "G.mp3",
+        "G#": "Gsharp.mp3",
+        "A": "A.mp3",
+        "A#": "Asharp.mp3",
+        "B": "B.mp3"
+    };
 
-/* LOGIN */
-document.getElementById("pass").addEventListener("keydown", e => {
-    if (e.key === "Enter") {
-        document.getElementById("login").style.display = "none";
-        document.getElementById("app").style.display = "flex";
-        print("ACCESS GRANTED ✔");
+    const audio = new Audio(sonidos[nota]);
+    audio.currentTime = 0;
+    audio.play();
+
+    // GRABAR
+    if (grabando) {
+        grabacion.push({
+            nota: nota,
+            tiempo: Date.now() - inicioTiempo
+        });
     }
+}
+
+// GRABAR
+function empezarGrabacion() {
+    grabacion = [];
+    grabando = true;
+    inicioTiempo = Date.now();
+    alert("Grabando...");
+}
+
+// REPRODUCIR
+function reproducir() {
+    grabando = false;
+
+    grabacion.forEach(nota => {
+        setTimeout(() => {
+            tocar(nota.nota);
+        }, nota.tiempo);
+    });
+}
+
+// TECLADO
+document.addEventListener("keydown", (e) => {
+    const k = e.key.toLowerCase();
+
+    if (k === "a") tocar("C");
+    if (k === "w") tocar("C#");
+    if (k === "s") tocar("D");
+    if (k === "e") tocar("D#");
+    if (k === "d") tocar("E");
+    if (k === "f") tocar("F");
+    if (k === "t") tocar("F#");
+    if (k === "g") tocar("G");
+    if (k === "y") tocar("G#");
+    if (k === "h") tocar("A");
+    if (k === "u") tocar("A#");
+    if (k === "j") tocar("B");
 });
-
-/* TERMINAL */
-function print(text, glitch=false) {
-    let div = document.createElement("div");
-    div.textContent = "> " + text;
-    if (glitch) div.classList.add("glitch");
-    terminal.appendChild(div);
-    terminal.scrollTop = terminal.scrollHeight;
-}
-
-/* SONIDO */
-function typeSound() {
-    try {
-        let s = sound.cloneNode();
-        s.volume = 0.3;
-        s.play();
-    } catch(e) {}
-}
-
-/* INPUT */
-input.addEventListener("keydown", e => {
-
-    typeSound();
-
-    if (e.key === "Enter") {
-        let cmd = input.value;
-        print(cmd);
-        execute(cmd);
-        input.value = "";
-    }
-});
-
-/* COMMANDS */
-function execute(cmd) {
-    typeSound();
-
-    if (cmd === "scan") runScan();
-    else if (cmd === "hack") hack();
-    else if (cmd === "radar") showRadar();
-    else if (cmd === "window") openWindow();
-    else if (cmd === "clear") clearTerminal();
-    else if (cmd === "help") {
-        print("scan | hack | radar | window | clear");
-    }
-    else print("ERROR: command not found", true);
-}
-
-/* FUNCIONES */
-function runScan() {
-    print("Scanning system...");
-    animateBar();
-}
-
-function hack() {
-    print("Bypassing firewall...");
-    setTimeout(() => print("Access granted ✔"), 1500);
-    animateBar();
-}
-
-function clearTerminal() {
-    terminal.innerHTML = "";
-}
-
-function animateBar() {
-    bar.style.width = "0%";
-    let progress = 0;
-
-    let interval = setInterval(() => {
-        progress += 4;
-        bar.style.width = progress + "%";
-
-        if (progress >= 100) {
-            clearInterval(interval);
-            print("Process completed ✔");
-        }
-    }, 100);
-}
-
-function openWindow() {
-    let win = document.createElement("div");
-    win.className = "window";
-    win.innerHTML = "SYSTEM LOG<br>Accessing data...";
-    document.body.appendChild(win);
-}
-
-function showRadar() {
-    let radar = document.createElement("div");
-    radar.className = "radar";
-
-    let line = document.createElement("div");
-    line.className = "line";
-
-    radar.appendChild(line);
-    document.getElementById("extra").appendChild(radar);
-}
-
-/* SERVICE WORKER */
-if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('sw.js');
-}
-
-/* START */
-print("ENDEX_UI FINAL READY");
-print("Type 'help'");
 </script>
 
 </body>
