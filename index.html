@@ -1,195 +1,271 @@
-<!DOCTYPE html>
+!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<title>Senci de Salita</title>
+  <meta charset="UTF-8">
+  <title>Senci de Salita</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: monospace;
+      color: #a855f7;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background: black;
+    }
 
-<style>
-body {
-  margin: 0;
-  font-family: monospace;
-  color: #a855f7;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  background: black;
-}
+    /* Fondo animado */
+    #bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+    }
 
-/* fondo animado */
-#bg {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: -1;
-}
+    /* Caja */
+    .box {
+      border: 2px solid #a855f7;
+      padding: 20px;
+      width: 300px;
+      text-align: center;
+      background: rgba(0, 0, 0, 0.6);
+      box-shadow: 0 0 10px #a855f7, 0 0 30px #9333ea, 0 0 60px #7e22ce;
+    }
 
-/* caja */
-.box {
-  border: 2px solid #a855f7;
-  padding: 20px;
-  width: 300px;
-  text-align: center;
-  background: rgba(0,0,0,0.6);
-  box-shadow: 0 0 10px #a855f7, 0 0 30px #9333ea, 0 0 60px #7e22ce;
-}
+    /* Input y botón igualados */
+    input, button {
+      width: 100%;
+      padding: 10px;
+      margin-top: 10px;
+      background: black;
+      color: #a855f7;
+      border: 1px solid #a855f7;
+      box-sizing: border-box;
+    }
 
-/* input */
-input {
-  width: 100%;
-  padding: 10px;
-  margin-top: 10px;
-  background: black;
-  color: #a855f7;
-  border: 1px solid #a855f7;
-}
+    /* Botón hover */
+    button:hover {
+      background: #a855f7;
+      color: black;
+    }
 
-/* botón */
-button {
-  width: 100%;
-  padding: 10px;
-  margin-top: 10px;
-  border: 1px solid #a855f7;
-  background: black;
-  color: #a855f7;
-  cursor: pointer;
-}
+    /* Botones de sensi */
+    .sensi-buttons {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 15px;
+    }
 
-button:hover {
-  background: #a855f7;
-  color: black;
-}
-</style>
+    .sensi-buttons button {
+      width: 48%;
+      margin-top: 10px;
+      background: black;
+      color: #a855f7;
+      border: 1px solid #a855f7;
+      cursor: pointer;
+    }
 
+    .sensi-buttons button.active {
+      background: #a855f7;
+      color: black;
+    }
+  </style>
 </head>
 <body>
 
-<canvas id="bg"></canvas>
+  <canvas id="bg"></canvas>
 
-<div class="box">
-  <h2>🎯 SENCI DE SALITA</h2>
+  <div class="box">
+    <h2>🎯 SENCI DE SALITA</h2>
 
-  <input id="device" placeholder="Ej: Samsung A51, iPhone 11">
-  <button id="btn">GENERAR SENCI</button>
+    <input id="device" placeholder="Ej: Samsung A51, iPhone 11">
+    
+    <!-- Contenedor para los botones de sensi (oculto al inicio) -->
+    <div id="sensi-options" class="sensi-buttons" style="display: none;">
+      <button id="high-sensi">SENSI ALTA</button>
+      <button id="low-sensi">SENSI BAJA</button>
+    </div>
 
-  <p id="error" style="color:red;"></p>
+    <button id="btn">GENERAR SENCI</button>
 
-  <div id="sens"></div>
-  <div id="headshot"></div>
-</div>
+    <p id="error" style="color: red;"></p>
 
-<script>
-/* BOTÓN */
-document.getElementById("btn").addEventListener("click", function() {
+    <div id="sens"></div>
+    <div id="headshot"></div>
+  </div>
 
-  const device = document.getElementById("device").value;
-  const error = document.getElementById("error");
-  const sensDiv = document.getElementById("sens");
-  const headshotDiv = document.getElementById("headshot");
+  <script>
+    // Variables para controlar la sensibilidad
+    let sensMode = ''; // 'high' o 'low'
 
-  if (!device.trim()) {
-    error.textContent = "Escribe tu dispositivo";
-    sensDiv.innerHTML = "";
-    headshotDiv.innerHTML = "";
-    return;
-  }
+    // Mostrar los botones de sensi después de escribir dispositivo
+    const deviceInput = document.getElementById("device");
+    const sensiOptions = document.getElementById("sensi-options");
 
-  error.textContent = "";
+    deviceInput.addEventListener("input", () => {
+      if (deviceInput.value.trim() !== "") {
+        sensiOptions.style.display = "flex";
+      } else {
+        sensiOptions.style.display = "none";
+        sensMode = ''; // Resetear modo si borras el input
+      }
+    });
 
-  let hash = 0;
-  for (let i = 0; i < device.length; i++) {
-    hash = device.charCodeAt(i) + ((hash << 5) - hash);
-  }
+    // Manejo de los botones de sensi
+    const highSensiBtn = document.getElementById("high-sensi");
+    const lowSensiBtn = document.getElementById("low-sensi");
 
-  const base = Math.abs(hash);
+    highSensiBtn.addEventListener("click", () => {
+      sensMode = 'high';
+      highSensiBtn.classList.add('active');
+      lowSensiBtn.classList.remove('active');
+    });
 
-  function calc(min, max, factor) {
-    let value = min + (base % factor);
-    if (value < min) value = min;
-    if (value > max) value = max;
-    return value;
-  }
+    lowSensiBtn.addEventListener("click", () => {
+      sensMode = 'low';
+      lowSensiBtn.classList.add('active');
+      highSensiBtn.classList.remove('active');
+    });
 
-  const sens = {
-    general: calc(120, 200, 80),
-    redDot: calc(90, 180, 70),
-    x2: calc(80, 170, 60),
-    x4: calc(70, 160, 50),
-    sniper: calc(60, 150, 40),
-    freeLook: calc(100, 200, 100),
-  };
+    // Generar sensibilidad
+    document.getElementById("btn").addEventListener("click", function() {
+      const device = deviceInput.value;
+      const error = document.getElementById("error");
+      const sensDiv = document.getElementById("sens");
+      const headshotDiv = document.getElementById("headshot");
 
-  sensDiv.innerHTML =
-    "GENERAL: " + sens.general + "<br>" +
-    "PUNTO ROJO: " + sens.redDot + "<br>" +
-    "MIRA X2: " + sens.x2 + "<br>" +
-    "MIRA X4: " + sens.x4 + "<br>" +
-    "FRANCOTIRADOR: " + sens.sniper + "<br>" +
-    "CAMARA 360: " + sens.freeLook;
+      if (!device.trim()) {
+        error.textContent = "Escribe tu dispositivo";
+        sensDiv.innerHTML = "";
+        headshotDiv.innerHTML = "";
+        return;
+      }
 
-  let precision = Math.floor((sens.general + sens.redDot + sens.freeLook) / 5);
-  if (precision < 99) precision = 99;
-  if (precision > 100) precision = 100;
+      if (sensMode === '') {
+        error.textContent = "Elige un modo de sensibilidad (alta o baja)";
+        sensDiv.innerHTML = "";
+        headshotDiv.innerHTML = "";
+        return;
+      }
 
-  headshotDiv.innerHTML = "🎯 HEADSHOT: " + precision + "%";
+      error.textContent = "";
 
-});
+      let hash = 0;
+      for (let i = 0; i < device.length; i++) {
+        hash = device.charCodeAt(i) + ((hash << 5) - hash);
+      }
 
-/* FONDO ANIMADO TIPO LÍNEAS */
-const canvas = document.getElementById("bg");
-const ctx = canvas.getContext("2d");
+      const base = Math.abs(hash);
 
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
+      function calc(min, max, factor) {
+        let value = min + (base % factor);
+        if (value < min) value = min;
+        if (value > max) value = max;
+        return value;
+      }
 
-let lines = [];
+      // Ajuste según el modo de sensibilidad
+      let multiplier = 1;
+      if (sensMode === 'high') {
+        multiplier = 1.2; // Sube los valores un 20% en modo alta
+      } else if (sensMode === 'low') {
+        multiplier = 0.8; // Baja los valores un 20% en modo baja
+      }
 
-for (let i = 0; i < 30; i++) {
-  lines.push({
-    x: Math.random() * canvas.width,
-    y: Math.random() * canvas.height,
-    length: Math.random() * 200,
-    angle: Math.random() * Math.PI * 2,
-    speed: Math.random() * 0.02 + 0.01
-  });
-}
+      const sens = {
+        general: calc(120, 200, 80) * multiplier,
+        redDot: calc(90, 180, 70) * multiplier,
+        x2: calc(80, 170, 60) * multiplier,
+        x4: calc(70, 160, 50) * multiplier,
+        sniper: calc(60, 150, 40) * multiplier,
+        freeLook: calc(100, 200, 100) * multiplier,
+      };
 
-function draw() {
-  ctx.fillStyle = "rgba(0,0,0,0.2)";
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
+      // Aseguramos que no se salgan de rango
+      sens.general = Math.round(Math.max(120, Math.min(sens.general, 200)));
+      sens.redDot = Math.round(Math.max(90, Math.min(sens.redDot, 180)));
+      sens.x2 = Math.round(Math.max(80, Math.min(sens.x2, 170)));
+      sens.x4 = Math.round(Math.max(70, Math.min(sens.x4, 160)));
+      sens.sniper = Math.round(Math.max(60, Math.min(sens.sniper, 150)));
+      sens.freeLook = Math.round(Math.max(100, Math.min(sens.freeLook, 200)));
 
-  ctx.strokeStyle = "#a855f7";
-  ctx.lineWidth = 2;
-  ctx.shadowBlur = 20;
-  ctx.shadowColor = "#a855f7";
+      sensDiv.innerHTML =
+        "GENERAL: " + sens.general + "<br>" +
+        "PUNTO ROJO: " + sens.redDot + "<br>" +
+        "MIRA X2: " + sens.x2 + "<br>" +
+        "MIRA X4: " + sens.x4 + "<br>" +
+        "FRANCOTIRADOR: " + sens.sniper + "<br>" +
+        "CAMARA 360: " + sens.freeLook;
 
-  lines.forEach(l => {
-    ctx.beginPath();
-    ctx.moveTo(l.x, l.y);
+      let precision = Math.floor((sens.general + sens.redDot + sens.freeLook) / 5);
+      if (precision < 99) precision = 99;
+      if (precision > 100) precision = 100;
 
-    let x2 = l.x + Math.cos(l.angle) * l.length;
-    let y2 = l.y + Math.sin(l.angle) * l.length;
+      headshotDiv.innerHTML = "🎯 HEADSHOT: " + precision + "%";
+    });
 
-    ctx.lineTo(x2, y2);
-    ctx.stroke();
+    // Fondo animado tipo líneas
+    const canvas = document.getElementById("bg");
+    const ctx = canvas.getContext("2d");
 
-    l.angle += l.speed;
-    l.x += Math.cos(l.angle) * 0.5;
-    l.y += Math.sin(l.angle) * 0.5;
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
 
-    if (l.x > canvas.width || l.y > canvas.height || l.x < 0 || l.y < 0) {
-      l.x = Math.random() * canvas.width;
-      l.y = Math.random() * canvas.height;
+    let lines = [];
+
+    for (let i = 0; i < 30; i++) {
+      lines.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        length: Math.random() * 200,
+        angle: Math.random() * Math.PI * 2,
+        speed: Math.random() * 0.02 + 0.01
+      });
     }
-  });
 
-  requestAnimationFrame(draw);
-}
+    function draw() {
+      ctx.fillStyle = "rgba(0, 0, 0, 0.2)";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-draw();
-</script>
+      ctx.strokeStyle = "#ff00ff";
+      ctx.lineWidth = 2;
+      ctx.shadowBlur = 20;
+      ctx.shadowColor = "#ff00ff";
+
+      lines.forEach(l => {
+        ctx.beginPath();
+        ctx.moveTo(l.x, l.y);
+
+        let x2 = l.x + Math.cos(l.angle) * l.length;
+        let y2 = l.y + Math.sin(l.angle) * l.length;
+
+        ctx.lineTo(x2, y2);
+        ctx.stroke();
+
+        l.angle += l.speed;
+        l.x += Math.cos(l.angle) * 0.5;
+        l.y += Math.sin(l.angle) * 0.5;
+
+        if (l.x > canvas.width || l.y > canvas.height || l.x < 0 || l.y < 0) {
+          l.x = Math.random() * canvas.width;
+          l.y = Math.random() * canvas.height;
+        }
+      });
+
+      requestAnimationFrame(draw);
+    }
+
+    draw();
+
+    // Ajuste de tamaño al cambiar el tamaño de la ventana
+    window.addEventListener('resize', () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    });
+  </script>
 
 </body>
 </html>
