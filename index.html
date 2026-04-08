@@ -1,8 +1,13 @@
-!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8">
+
+  <!-- Sin zoom en celular -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
   <title>Senci de Salita</title>
+
   <style>
     body {
       margin: 0;
@@ -13,6 +18,7 @@
       align-items: center;
       height: 100vh;
       background: black;
+      overflow: hidden;
     }
 
     /* Fondo animado */
@@ -29,24 +35,26 @@
     .box {
       border: 2px solid #a855f7;
       padding: 20px;
-      width: 300px;
+      width: 90%;
+      max-width: 340px;
       text-align: center;
-      background: rgba(0, 0, 0, 0.6);
+      background: rgba(0, 0, 0, 0.7);
       box-shadow: 0 0 10px #a855f7, 0 0 30px #9333ea, 0 0 60px #7e22ce;
+      border-radius: 10px;
     }
 
-    /* Input y botón igualados */
+    /* Input y botón */
     input, button {
       width: 100%;
-      padding: 10px;
+      padding: 12px;
       margin-top: 10px;
       background: black;
       color: #a855f7;
       border: 1px solid #a855f7;
       box-sizing: border-box;
+      font-size: 16px;
     }
 
-    /* Botón hover */
     button:hover {
       background: #a855f7;
       color: black;
@@ -55,217 +63,214 @@
     /* Botones de sensi */
     .sensi-buttons {
       display: flex;
-      justify-content: space-between;
-      margin-top: 15px;
+      gap: 5px;
+      margin-top: 10px;
     }
 
     .sensi-buttons button {
-      width: 48%;
-      margin-top: 10px;
-      background: black;
-      color: #a855f7;
-      border: 1px solid #a855f7;
-      cursor: pointer;
+      width: 100%;
     }
 
     .sensi-buttons button.active {
       background: #a855f7;
       color: black;
     }
+
+    /* 🔥 FIX TEXTO (NO SE SALE) */
+    #sens {
+      margin-top: 10px;
+      font-size: 13px;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+      text-align: left;
+    }
+
+    #headshot {
+      margin-top: 10px;
+      border: 1px solid #a855f7;
+      padding: 8px;
+      box-shadow: 0 0 10px #a855f7;
+      font-size: 13px;
+      word-wrap: break-word;
+    }
   </style>
 </head>
+
 <body>
 
-  <canvas id="bg"></canvas>
+<canvas id="bg"></canvas>
 
-  <div class="box">
-    <h2>🎯 SENCI DE SALITA</h2>
+<div class="box">
+  <h2>🎯 SENCI DE SALITA</h2>
 
-    <input id="device" placeholder="Ej: Samsung A51, iPhone 11">
-    
-    <!-- Contenedor para los botones de sensi (oculto al inicio) -->
-    <div id="sensi-options" class="sensi-buttons" style="display: none;">
-      <button id="high-sensi">SENSI ALTA</button>
-      <button id="low-sensi">SENSI BAJA</button>
-    </div>
+  <input id="device" placeholder="Ej: Samsung A51, iPhone 11">
 
-    <button id="btn">GENERAR SENCI</button>
-
-    <p id="error" style="color: red;"></p>
-
-    <div id="sens"></div>
-    <div id="headshot"></div>
+  <div id="sensi-options" class="sensi-buttons" style="display:none;">
+    <button id="high-sensi">SENSI ALTA</button>
+    <button id="low-sensi">SENSI BAJA</button>
   </div>
 
-  <script>
-    // Variables para controlar la sensibilidad
-    let sensMode = ''; // 'high' o 'low'
+  <button id="btn">GENERAR SENCI</button>
 
-    // Mostrar los botones de sensi después de escribir dispositivo
-    const deviceInput = document.getElementById("device");
-    const sensiOptions = document.getElementById("sensi-options");
+  <p id="error" style="color:red;"></p>
 
-    deviceInput.addEventListener("input", () => {
-      if (deviceInput.value.trim() !== "") {
-        sensiOptions.style.display = "flex";
-      } else {
-        sensiOptions.style.display = "none";
-        sensMode = ''; // Resetear modo si borras el input
-      }
-    });
+  <div id="sens"></div>
+  <div id="headshot"></div>
+</div>
 
-    // Manejo de los botones de sensi
-    const highSensiBtn = document.getElementById("high-sensi");
-    const lowSensiBtn = document.getElementById("low-sensi");
+<script>
+let sensMode = '';
 
-    highSensiBtn.addEventListener("click", () => {
-      sensMode = 'high';
-      highSensiBtn.classList.add('active');
-      lowSensiBtn.classList.remove('active');
-    });
+const deviceInput = document.getElementById("device");
+const sensiOptions = document.getElementById("sensi-options");
 
-    lowSensiBtn.addEventListener("click", () => {
-      sensMode = 'low';
-      lowSensiBtn.classList.add('active');
-      highSensiBtn.classList.remove('active');
-    });
+deviceInput.addEventListener("input", () => {
+  if (deviceInput.value.trim() !== "") {
+    sensiOptions.style.display = "flex";
+  } else {
+    sensiOptions.style.display = "none";
+    sensMode = '';
+  }
+});
 
-    // Generar sensibilidad
-    document.getElementById("btn").addEventListener("click", function() {
-      const device = deviceInput.value;
-      const error = document.getElementById("error");
-      const sensDiv = document.getElementById("sens");
-      const headshotDiv = document.getElementById("headshot");
+const highBtn = document.getElementById("high-sensi");
+const lowBtn = document.getElementById("low-sensi");
 
-      if (!device.trim()) {
-        error.textContent = "Escribe tu dispositivo";
-        sensDiv.innerHTML = "";
-        headshotDiv.innerHTML = "";
-        return;
-      }
+highBtn.onclick = () => {
+  sensMode = "high";
+  highBtn.classList.add("active");
+  lowBtn.classList.remove("active");
+};
 
-      if (sensMode === '') {
-        error.textContent = "Elige un modo de sensibilidad (alta o baja)";
-        sensDiv.innerHTML = "";
-        headshotDiv.innerHTML = "";
-        return;
-      }
+lowBtn.onclick = () => {
+  sensMode = "low";
+  lowBtn.classList.add("active");
+  highBtn.classList.remove("active");
+};
 
-      error.textContent = "";
+document.getElementById("btn").onclick = () => {
+  const device = deviceInput.value;
+  const error = document.getElementById("error");
+  const sensDiv = document.getElementById("sens");
+  const headshotDiv = document.getElementById("headshot");
 
-      let hash = 0;
-      for (let i = 0; i < device.length; i++) {
-        hash = device.charCodeAt(i) + ((hash << 5) - hash);
-      }
+  if (!device.trim()) {
+    error.textContent = "Escribe tu dispositivo";
+    sensDiv.innerHTML = "";
+    headshotDiv.innerHTML = "";
+    return;
+  }
 
-      const base = Math.abs(hash);
+  if (sensMode === '') {
+    error.textContent = "Elige Sensi Alta o Baja";
+    sensDiv.innerHTML = "";
+    headshotDiv.innerHTML = "";
+    return;
+  }
 
-      function calc(min, max, factor) {
-        let value = min + (base % factor);
-        if (value < min) value = min;
-        if (value > max) value = max;
-        return value;
-      }
+  error.textContent = "";
 
-      // Ajuste según el modo de sensibilidad
-      let multiplier = 1;
-      if (sensMode === 'high') {
-        multiplier = 1.2; // Sube los valores un 20% en modo alta
-      } else if (sensMode === 'low') {
-        multiplier = 0.8; // Baja los valores un 20% en modo baja
-      }
+  let hash = 0;
+  for (let i = 0; i < device.length; i++) {
+    hash = device.charCodeAt(i) + ((hash << 5) - hash);
+  }
 
-      const sens = {
-        general: calc(120, 200, 80) * multiplier,
-        redDot: calc(90, 180, 70) * multiplier,
-        x2: calc(80, 170, 60) * multiplier,
-        x4: calc(70, 160, 50) * multiplier,
-        sniper: calc(60, 150, 40) * multiplier,
-        freeLook: calc(100, 200, 100) * multiplier,
-      };
+  const base = Math.abs(hash);
 
-      // Aseguramos que no se salgan de rango
-      sens.general = Math.round(Math.max(120, Math.min(sens.general, 200)));
-      sens.redDot = Math.round(Math.max(90, Math.min(sens.redDot, 180)));
-      sens.x2 = Math.round(Math.max(80, Math.min(sens.x2, 170)));
-      sens.x4 = Math.round(Math.max(70, Math.min(sens.x4, 160)));
-      sens.sniper = Math.round(Math.max(60, Math.min(sens.sniper, 150)));
-      sens.freeLook = Math.round(Math.max(100, Math.min(sens.freeLook, 200)));
+  function calc(min, max, factor) {
+    let mid = (min + max) / 2;
+    let variation = (base % factor) - (factor / 2);
+    let value = mid + variation * 0.5;
+    return Math.round(Math.max(min, Math.min(value, max)));
+  }
 
-      sensDiv.innerHTML =
-        "GENERAL: " + sens.general + "<br>" +
-        "PUNTO ROJO: " + sens.redDot + "<br>" +
-        "MIRA X2: " + sens.x2 + "<br>" +
-        "MIRA X4: " + sens.x4 + "<br>" +
-        "FRANCOTIRADOR: " + sens.sniper + "<br>" +
-        "CAMARA 360: " + sens.freeLook;
+  let boost = sensMode === "high" ? 1.1 : 0.9;
 
-      let precision = Math.floor((sens.general + sens.redDot + sens.freeLook) / 5);
-      if (precision < 99) precision = 99;
-      if (precision > 100) precision = 100;
+  const sens = {
+    general: calc(140, 190, 40) * boost,
+    redDot: calc(110, 170, 30) * boost,
+    x2: calc(100, 160, 25) * boost,
+    x4: calc(90, 150, 20) * boost,
+    sniper: calc(80, 140, 15) * boost,
+    freeLook: calc(130, 190, 50) * boost
+  };
 
-      headshotDiv.innerHTML = "🎯 HEADSHOT: " + precision + "%";
-    });
+  for (let key in sens) {
+    sens[key] = Math.round(sens[key]);
+  }
 
-    // Fondo animado tipo líneas
-    const canvas = document.getElementById("bg");
-    const ctx = canvas.getContext("2d");
+  sensDiv.innerHTML = `
+GENERAL: ${sens.general}<br>
+PUNTO ROJO: ${sens.redDot}<br>
+MIRA X2: ${sens.x2}<br>
+MIRA X4: ${sens.x4}<br>
+FRANCOTIRADOR: ${sens.sniper}<br>
+CAMARA 360: ${sens.freeLook}
+`;
 
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+  let precision = Math.floor((sens.general + sens.redDot + sens.freeLook) / 5);
+  if (precision < 99) precision = 99;
+  if (precision > 100) precision = 100;
 
-    let lines = [];
+  headshotDiv.innerHTML = "🎯 HEADSHOT: " + precision + "%";
+};
 
-    for (let i = 0; i < 30; i++) {
-      lines.push({
-        x: Math.random() * canvas.width,
-        y: Math.random() * canvas.height,
-        length: Math.random() * 200,
-        angle: Math.random() * Math.PI * 2,
-        speed: Math.random() * 0.02 + 0.01
-      });
+// Fondo animado
+const canvas = document.getElementById("bg");
+const ctx = canvas.getContext("2d");
+
+function resize() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+resize();
+
+let lines = [];
+
+for (let i = 0; i < 35; i++) {
+  lines.push({
+    x: Math.random() * canvas.width,
+    y: Math.random() * canvas.height,
+    length: Math.random() * 150,
+    angle: Math.random() * Math.PI * 2,
+    speed: Math.random() * 0.03 + 0.01
+  });
+}
+
+function draw() {
+  ctx.fillStyle = "rgba(0,0,0,0.25)";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  ctx.strokeStyle = "#d400ff";
+  ctx.shadowColor = "#d400ff";
+  ctx.shadowBlur = 15;
+
+  lines.forEach(l => {
+    ctx.beginPath();
+    ctx.moveTo(l.x, l.y);
+    ctx.lineTo(
+      l.x + Math.cos(l.angle) * l.length,
+      l.y + Math.sin(l.angle) * l.length
+    );
+    ctx.stroke();
+
+    l.angle += l.speed;
+    l.x += Math.cos(l.angle);
+    l.y += Math.sin(l.angle);
+
+    if (l.x < 0 || l.x > canvas.width || l.y < 0 || l.y > canvas.height) {
+      l.x = Math.random() * canvas.width;
+      l.y = Math.random() * canvas.height;
     }
+  });
 
-    function draw() {
-      ctx.fillStyle = "rgba(0, 0, 0, 0.2)";
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
+  requestAnimationFrame(draw);
+}
 
-      ctx.strokeStyle = "#ff00ff";
-      ctx.lineWidth = 2;
-      ctx.shadowBlur = 20;
-      ctx.shadowColor = "#ff00ff";
+draw();
 
-      lines.forEach(l => {
-        ctx.beginPath();
-        ctx.moveTo(l.x, l.y);
-
-        let x2 = l.x + Math.cos(l.angle) * l.length;
-        let y2 = l.y + Math.sin(l.angle) * l.length;
-
-        ctx.lineTo(x2, y2);
-        ctx.stroke();
-
-        l.angle += l.speed;
-        l.x += Math.cos(l.angle) * 0.5;
-        l.y += Math.sin(l.angle) * 0.5;
-
-        if (l.x > canvas.width || l.y > canvas.height || l.x < 0 || l.y < 0) {
-          l.x = Math.random() * canvas.width;
-          l.y = Math.random() * canvas.height;
-        }
-      });
-
-      requestAnimationFrame(draw);
-    }
-
-    draw();
-
-    // Ajuste de tamaño al cambiar el tamaño de la ventana
-    window.addEventListener('resize', () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-    });
-  </script>
+window.addEventListener("resize", resize);
+</script>
 
 </body>
 </html>
