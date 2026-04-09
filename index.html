@@ -34,14 +34,31 @@ body {
   z-index: -1;
 }
 
-/* Caja */
-.box {
+/* CONTENEDOR DOBLE */
+.container {
+  display: flex;
+  gap: 10px;
   width: 95%;
-  max-width: 400px;
+  max-width: 800px;
+}
+
+/* Panel izquierdo */
+.box {
+  width: 50%;
   padding: 18px;
   border: 2px solid #00eaff;
   background: rgba(0,0,0,0.9);
   box-shadow: 0 0 25px #00eaff;
+}
+
+/* Panel derecho */
+.resultado {
+  width: 50%;
+  padding: 18px;
+  border: 2px solid #00eaff;
+  background: rgba(0,0,0,0.9);
+  box-shadow: 0 0 25px #00eaff;
+  display: none;
 }
 
 /* Inputs y botones */
@@ -52,7 +69,6 @@ input, button {
   background: black;
   border: 1px solid #00eaff;
   color: #00eaff;
-  font-size: 14px;
 }
 
 /* Botones rango */
@@ -66,45 +82,27 @@ input, button {
   color: black;
 }
 
-/* Panel */
+/* Panel interno */
 .panel {
   margin-top: 12px;
   border: 1px solid #00eaff;
   padding: 12px;
-  font-size: 13px;
-  text-align: left;
-  box-shadow: 0 0 15px #00eaff inset;
-  min-height: 180px;
-}
-
-/* Segunda pantalla */
-#panel2 {
-  display: none;
+  min-height: 150px;
 }
 
 /* Loader */
 #loader {
   display: none;
+  margin-top: 10px;
 }
 
-/* Botones abajo */
-.actions {
-  display: flex;
-  gap: 5px;
-}
-
-/* Hover */
-button:hover {
-  background: #00eaff;
-  color: black;
-}
-
-/* Vista dividida en PC */
-@media (min-width: 600px) {
-  #panel, #panel2 {
-    width: 48%;
-    display: inline-block;
-    vertical-align: top;
+/* Responsive celular */
+@media (max-width: 600px) {
+  .container {
+    flex-direction: column;
+  }
+  .box, .resultado {
+    width: 100%;
   }
 }
 </style>
@@ -114,6 +112,9 @@ button:hover {
 
 <canvas id="bg"></canvas>
 
+<div class="container">
+
+<!-- IZQUIERDA -->
 <div class="box">
 
 <h2>⚡ SENCI PRO SALITA</h2>
@@ -131,23 +132,22 @@ button:hover {
 === ESPERANDO DATOS ===
 </div>
 
-<!-- 🔥 LOADER -->
 <div id="loader">
-  <div style="border:1px solid #00eaff; padding:10px; text-align:center;">
-    ⚡ GENERANDO SENCI...
-    <div style="height:6px; background:#003; margin-top:10px; overflow:hidden;">
-      <div id="bar" style="height:100%; width:0%; background:#00eaff;"></div>
-    </div>
+  ⚡ GENERANDO...
+  <div style="height:6px; background:#003; margin-top:8px;">
+    <div id="bar" style="height:100%; width:0%; background:#00eaff;"></div>
   </div>
 </div>
-
-<!-- 🔥 SEGUNDA PANTALLA -->
-<div id="panel2" class="panel"></div>
 
 <div class="actions">
   <button onclick="generar(true)">CON DPI</button>
   <button onclick="generar(false)">SIN DPI</button>
 </div>
+
+</div>
+
+<!-- DERECHA -->
+<div class="resultado" id="resultado"></div>
 
 </div>
 
@@ -164,7 +164,6 @@ function select(r) {
   document.getElementById(r.toLowerCase()).classList.add("active");
 }
 
-/* 🔥 GENERADOR CON ANIMACIÓN */
 function generar(dpi) {
   let marca = document.getElementById("marca").value;
   let modelo = document.getElementById("modelo").value;
@@ -176,10 +175,10 @@ function generar(dpi) {
 
   const loader = document.getElementById("loader");
   const bar = document.getElementById("bar");
-  const panel2 = document.getElementById("panel2");
+  const resultado = document.getElementById("resultado");
 
   loader.style.display = "block";
-  panel2.style.display = "none";
+  resultado.style.display = "none";
   bar.style.width = "0%";
 
   let progreso = 0;
@@ -191,7 +190,7 @@ function generar(dpi) {
     if (progreso >= 100) {
       clearInterval(intervalo);
       loader.style.display = "none";
-      panel2.style.display = "block";
+      resultado.style.display = "block";
 
       let base = marca.length * modelo.length;
       let mult = rango === "ALTA" ? 1.15 : rango === "MEDIA" ? 1.05 : 0.95;
@@ -215,7 +214,7 @@ function generar(dpi) {
         sens[key] = Math.round(sens[key]);
       }
 
-      panel2.innerHTML = `
+      resultado.innerHTML = `
 === SENCI GENERADA ===<br>
 RANGO : ${rango}<br>
 MODO : ${dpi ? "CON DPI" : "SIN DPI"}<br>
@@ -235,7 +234,7 @@ DPI : ${dpi ? "411" : "DEFAULT"}<br>
   }, 50);
 }
 
-/* 🔵 Fondo animado */
+/* Fondo animado */
 const canvas = document.getElementById("bg");
 const ctx = canvas.getContext("2d");
 
