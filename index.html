@@ -12,6 +12,7 @@ font-family:Arial;
 overflow:hidden;
 }
 
+/* FONDO */
 canvas{
 position:fixed;
 top:0;
@@ -19,12 +20,21 @@ left:0;
 z-index:0;
 }
 
-.panel{
-position:relative;
+/* CONTENEDOR */
+.container{
+display:flex;
+gap:20px;
+margin-top:50px;
 z-index:2;
-width:90%;
-max-width:350px;
-margin:80px auto;
+align-items:flex-start;
+justify-content:center;
+flex-wrap:wrap;
+}
+
+/* PANEL Y RESULTADO */
+.panel, .resultPanel{
+width:300px;
+max-width:90vw;
 padding:15px;
 border:2px solid #00eaff;
 box-shadow:0 0 20px #00eaff;
@@ -32,6 +42,7 @@ color:#00eaff;
 background:#000;
 }
 
+/* INPUTS */
 input{
 width:100%;
 padding:10px;
@@ -39,12 +50,20 @@ margin:5px 0;
 background:#000;
 border:1px solid #00eaff;
 color:#00eaff;
+box-sizing:border-box;
 }
 
+/* FILAS */
+.row{
+display:flex;
+justify-content:space-between;
+}
+
+/* BOTONES */
 button{
-width:32%;
+flex:1;
 padding:10px;
-margin:5px 1%;
+margin:5px;
 background:#000;
 border:1px solid #00eaff;
 color:#00eaff;
@@ -57,7 +76,7 @@ background:#00eaff;
 color:#000;
 }
 
-/* BOTON DRAG */
+/* DRAG */
 .dragBtn{
 width:100%;
 border-color:red;
@@ -66,16 +85,11 @@ color:red;
 
 /* RESULTADO */
 #resultado{
-margin-top:10px;
-padding:10px;
-border:1px solid #00eaff;
-max-height:250px;
-overflow:auto;
 font-size:13px;
 line-height:1.6;
 }
 
-/* BOTON VIP */
+/* VIP */
 #vipBtn{
 position:fixed;
 top:50%;
@@ -103,7 +117,7 @@ animation:brilloVIP 2s infinite;
 100%{box-shadow:0 0 10px #FFD700;}
 }
 
-/* VIP FULL */
+/* PANEL VIP */
 #panelVIP{
 display:none;
 position:fixed;
@@ -124,26 +138,38 @@ overflow:auto;
 
 <canvas id="bg"></canvas>
 
+<div class="container">
+
+<!-- PANEL -->
 <div class="panel">
 <h3>⚡ SENCI PRO SALITA</h3>
 
 <input id="marca" placeholder="Marca del dispositivo">
 <input id="modelo" placeholder="Modelo del dispositivo">
 
+<div class="row">
 <button onclick="setRango('ALTA')">ALTA</button>
 <button onclick="setRango('MEDIA')">MEDIA</button>
 <button onclick="setRango('BAJA')">BAJA</button>
+</div>
 
 <button onclick="activarDrag()" class="dragBtn">🔥 DRAG SHOT PRO</button>
 
-<br>
-
+<div class="row">
 <button onclick="generar(true)">CON DPI</button>
 <button onclick="generar(false)">SIN DPI</button>
-
-<div id="resultado">---</div>
 </div>
 
+</div>
+
+<!-- RESULTADO AL LADO -->
+<div class="resultPanel" id="resultado">
+ESPERANDO DATOS...
+</div>
+
+</div>
+
+<!-- VIP -->
 <div id="vipBtn" onclick="abrirVIP()">VIP</div>
 
 <div id="panelVIP">
@@ -158,13 +184,11 @@ function setRango(r){
 rango=r;
 }
 
-/* ACTIVAR DRAG */
 function activarDrag(){
 dragMode=!dragMode;
-alert(dragMode?"🔥 DRAG SHOT ACTIVADO":"❌ DRAG SHOT DESACTIVADO");
+alert(dragMode?"🔥 DRAG ACTIVADO":"❌ DRAG DESACTIVADO");
 }
 
-/* GENERADOR */
 function generar(dpi){
 let marca=document.getElementById("marca").value;
 let modelo=document.getElementById("modelo").value;
@@ -207,7 +231,7 @@ sens.general+=5;
 sens.red+=5;
 }
 
-/* DRAG SHOT PRO */
+/* DRAG */
 if(dragMode){
 sens.general+=15;
 sens.red+=25;
@@ -219,25 +243,19 @@ sens.boton+=8;
 /* RESULTADO */
 resultado.innerHTML=`
 <b>📱 ${marca} ${modelo}</b><br>
-⚡ ${rango} | ${dpi?"DPI 411":"SIN DPI"} ${dragMode?"🔥 DRAG PRO":""}
+⚡ ${rango} | ${dpi?"DPI 411":"SIN DPI"} ${dragMode?"🔥 DRAG":""}
 
 <hr>
 
 GENERAL: ${sens.general}<br>
-
 MIRA DE PUNTO ROJO: ${sens.red}<br>
-
 MIRA X2: ${sens.x2}<br>
-
 MIRA X4: ${sens.x4}<br>
-
-MIRA FRANCOTIRADOR: ${sens.x4 + 12}<br>
-
+MIRA FRANCOTIRADOR: ${sens.x4+12}<br>
 BOTÓN DE CÁMARA 360°: ${sens.boton}<br>
 
 <hr>
-
-🎯 HEADSHOT PRECISO
+🎯 HEADSHOT PRO
 `;
 
 },800);
@@ -250,24 +268,24 @@ let p=prompt("Clave:");
 
 if(u==="SALITA" && p==="22"){
 
-document.querySelector(".panel").style.display="none";
+document.querySelector(".container").style.display="none";
 document.getElementById("vipBtn").style.display="none";
 
 let panelVIP=document.getElementById("panelVIP");
 panelVIP.style.display="block";
 
 document.getElementById("vipResultado").innerHTML=`
-<h2>💀 MODO VIP EXTREMO 💀</h2>
+<h2>💀 VIP EXTREMO 💀</h2>
 
 GENERAL: 200<br>
-MIRA DE PUNTO ROJO: 185<br>
-MIRA X2: 175<br>
-MIRA X4: 165<br>
-MIRA FRANCOTIRADOR: 195<br>
-BOTÓN 360°: 75<br>
+ROJO: 185<br>
+X2: 175<br>
+X4: 165<br>
+FRANCO: 195<br>
+BOTÓN: 75<br>
 
 <br>
-<button onclick="cerrarVIP()" style="padding:10px;width:100%;">SALIR</button>
+<button onclick="cerrarVIP()">SALIR</button>
 `;
 
 }else{
@@ -277,7 +295,7 @@ alert("Acceso denegado");
 
 function cerrarVIP(){
 document.getElementById("panelVIP").style.display="none";
-document.querySelector(".panel").style.display="block";
+document.querySelector(".container").style.display="flex";
 document.getElementById("vipBtn").style.display="flex";
 }
 
