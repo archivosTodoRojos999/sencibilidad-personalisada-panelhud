@@ -57,10 +57,22 @@ background:#00eaff;
 color:#000;
 }
 
+/* BOTON DRAG */
+.dragBtn{
+width:100%;
+border-color:red;
+color:red;
+}
+
+/* RESULTADO */
 #resultado{
 margin-top:10px;
 padding:10px;
 border:1px solid #00eaff;
+max-height:250px;
+overflow:auto;
+font-size:13px;
+line-height:1.6;
 }
 
 /* BOTON VIP */
@@ -91,7 +103,7 @@ animation:brilloVIP 2s infinite;
 100%{box-shadow:0 0 10px #FFD700;}
 }
 
-/* PANEL VIP FULL */
+/* VIP FULL */
 #panelVIP{
 display:none;
 position:fixed;
@@ -122,6 +134,8 @@ overflow:auto;
 <button onclick="setRango('MEDIA')">MEDIA</button>
 <button onclick="setRango('BAJA')">BAJA</button>
 
+<button onclick="activarDrag()" class="dragBtn">🔥 DRAG SHOT PRO</button>
+
 <br>
 
 <button onclick="generar(true)">CON DPI</button>
@@ -138,11 +152,19 @@ overflow:auto;
 
 <script>
 let rango="ALTA";
+let dragMode=false;
 
 function setRango(r){
 rango=r;
 }
 
+/* ACTIVAR DRAG */
+function activarDrag(){
+dragMode=!dragMode;
+alert(dragMode?"🔥 DRAG SHOT ACTIVADO":"❌ DRAG SHOT DESACTIVADO");
+}
+
+/* GENERADOR */
 function generar(dpi){
 let marca=document.getElementById("marca").value;
 let modelo=document.getElementById("modelo").value;
@@ -151,39 +173,77 @@ let resultado=document.getElementById("resultado");
 resultado.innerHTML="⏳ Generando...";
 
 setTimeout(()=>{
-let base=modelo.length*7;
+
+let base=modelo.length*3;
 
 let sens={
-general:190+base,
-red:160+base,
-x2:140+base,
-x4:130+base,
-boton:60+base
+general:185 + base,
+red:150 + base,
+x2:135 + base,
+x4:125 + base,
+boton:58 + base
 };
 
-resultado.innerHTML=`
-<div style="text-align:center;">🔥 SENCI PRO 🔥</div>
-📱 ${marca} - ${modelo}<br>
-⚡ ${rango} | ${dpi?"DPI 411":"SIN DPI"}<br><hr>
-
-GENERAL → ${sens.general}<br>
-
-MIRA DE PUNTO ROJO → ${sens.red}<br>
-
-MIRA X2 → ${sens.x2}<br>
-
-MIRA X4 → ${sens.x4}<br>
-
-MIRA FRANCOTIRADOR → ${sens.x4 + 10}<br>
-
-BOTÓN DE CÁMARA 360° → ${sens.boton}<br>
-
-<hr>
-🎯 HEADSHOT
-`;
-},1000);
+/* RANGO */
+if(rango==="ALTA"){
+sens.general+=10;
+sens.red+=15;
+sens.x2+=10;
+sens.x4+=8;
+sens.boton+=5;
 }
 
+if(rango==="BAJA"){
+sens.general-=10;
+sens.red-=12;
+sens.x2-=8;
+sens.x4-=6;
+sens.boton-=4;
+}
+
+/* DPI */
+if(dpi){
+sens.general+=5;
+sens.red+=5;
+}
+
+/* DRAG SHOT PRO */
+if(dragMode){
+sens.general+=15;
+sens.red+=25;
+sens.x2+=18;
+sens.x4+=15;
+sens.boton+=8;
+}
+
+/* RESULTADO */
+resultado.innerHTML=`
+<b>📱 ${marca} ${modelo}</b><br>
+⚡ ${rango} | ${dpi?"DPI 411":"SIN DPI"} ${dragMode?"🔥 DRAG PRO":""}
+
+<hr>
+
+GENERAL: ${sens.general}<br>
+
+MIRA DE PUNTO ROJO: ${sens.red}<br>
+
+MIRA X2: ${sens.x2}<br>
+
+MIRA X4: ${sens.x4}<br>
+
+MIRA FRANCOTIRADOR: ${sens.x4 + 12}<br>
+
+BOTÓN DE CÁMARA 360°: ${sens.boton}<br>
+
+<hr>
+
+🎯 HEADSHOT PRECISO
+`;
+
+},800);
+}
+
+/* VIP */
 function abrirVIP(){
 let u=prompt("Usuario:");
 let p=prompt("Clave:");
@@ -196,19 +256,18 @@ document.getElementById("vipBtn").style.display="none";
 let panelVIP=document.getElementById("panelVIP");
 panelVIP.style.display="block";
 
-let vip=document.getElementById("vipResultado");
-
-vip.innerHTML=`
-<h2>💀 VIP EXTREMO 💀</h2>
+document.getElementById("vipResultado").innerHTML=`
+<h2>💀 MODO VIP EXTREMO 💀</h2>
 
 GENERAL: 200<br>
-MIRA DE PUNTO ROJO: 180<br>
-MIRA X2: 170<br>
-MIRA X4: 160<br>
-MIRA FRANCOTIRADOR: 190<br>
-BOTÓN 360°: 70<br>
+MIRA DE PUNTO ROJO: 185<br>
+MIRA X2: 175<br>
+MIRA X4: 165<br>
+MIRA FRANCOTIRADOR: 195<br>
+BOTÓN 360°: 75<br>
 
-<button onclick="cerrarVIP()">SALIR</button>
+<br>
+<button onclick="cerrarVIP()" style="padding:10px;width:100%;">SALIR</button>
 `;
 
 }else{
@@ -231,7 +290,7 @@ c.height=window.innerHeight;
 
 let dots=[];
 
-for(let i=0;i<50;i++){
+for(let i=0;i<40;i++){
 dots.push({
 x:Math.random()*c.width,
 y:Math.random()*c.height,
