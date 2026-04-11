@@ -54,11 +54,23 @@ input[type=range]{width:100%;}
 .anuncio{background:#120000;border:2px solid #ff2a2a;border-radius:20px;padding:20px;width:90%;max-width:300px;text-align:center;box-shadow:0 0 20px red;position:relative;}
 .cerrar{position:absolute;top:8px;right:10px;cursor:pointer;font-size:18px;color:white;}
 .titulo-anuncio{color:#ff2a2a;font-size:18px;margin-bottom:10px;}
+
+/* ANIMACIÓN GENERAR */
+.flash{
+animation:flashAnim 0.5s ease;
+}
+
+@keyframes flashAnim{
+0%{box-shadow:0 0 10px #ff2a2a;transform:scale(1);} 
+50%{box-shadow:0 0 30px #ff0000;transform:scale(1.02);} 
+100%{box-shadow:0 0 10px #ff2a2a;transform:scale(1);} 
+}
+
 </style></head><body><div class="container">
 <h1>✨ Gerador de Sensi</h1><div class="tabs">
 <div class="tab active" onclick="setTab(this,'normal')">Sensi Normal</div>
-<div class="tab" onclick="setTab(this,'premium')">👑 Sensi Alta</div>
-<div class="tab" onclick="setTab(this,'inspirada')">⚡ Sensi media</div>
+<div class="tab" onclick="setTab(this,'premium')">👑 Sensi Premium</div>
+<div class="tab" onclick="setTab(this,'inspirada')">⚡ Sensi Inspirada</div>
 </div><input id="marca" placeholder="Marca del dispositivo">
 <input id="modelo" placeholder="Modelo del dispositivo"><div class="volver">← Voltar</div><div class="box"><button onclick="generarSenci()" style="width:100%;padding:10px;margin-bottom:10px;border:none;border-radius:10px;background:#ff2a2a;color:white;font-weight:bold;">🚀 GENERAR SENCI</button>
 
@@ -110,7 +122,7 @@ document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
 btn.classList.add('active');
 tipoActual=tipo;
 document.getElementById('tipo').innerText=tipo.toUpperCase();
-calcular();
+// ❌ ya NO genera automáticamente
 }
 
 function update(id,val){
@@ -119,6 +131,11 @@ if(id==='boton') document.getElementById('btnSize').innerText=val;
 }
 
 function generarSenci(){
+// animación visual
+let box=document.querySelector('.box');
+box.classList.add('flash');
+setTimeout(()=>box.classList.remove('flash'),500);
+
 calcular();
 }
 
@@ -145,6 +162,18 @@ x4:Math.floor((110+base)*mult),
 awm:Math.floor((125+base)*mult),
 boton:Math.floor((50+base)*mult)
 };
+
+// LIMITES 1 - 200
+function limitar(v,max){
+return Math.max(1,Math.min(v,max));
+}
+
+sens.general=limitar(sens.general,200);
+sens.red=limitar(sens.red,200);
+sens.x2=limitar(sens.x2,200);
+sens.x4=limitar(sens.x4,200);
+sens.awm=limitar(sens.awm,200);
+sens.boton=limitar(sens.boton,100);
 
 for(let k in sens){
 if(document.getElementById(k)) document.getElementById(k).innerText=sens[k];
