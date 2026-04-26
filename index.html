@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SENCI DE SALITA 2.0</title>
+<title>SENCI DE SALITA 2.0 </title>
 
 <style>
 body{
@@ -14,11 +14,13 @@ color:white;
 position:relative;
 overflow-x:hidden;
 word-wrap:break-word;
+display:flex;
+justify-content:center;
+align-items:center;
+min-height:100vh;
 }
 
-*{
-box-sizing:border-box;
-}
+*{box-sizing:border-box;}
 
 body::before{
 content:"";
@@ -26,9 +28,9 @@ position:fixed;
 top:0;left:0;
 width:100%;height:100%;
 background:radial-gradient(circle at 20% 30%, rgba(255,0,0,0.2), transparent 40%),
-            radial-gradient(circle at 80% 70%, rgba(255,50,50,0.2), transparent 40%),
-            radial-gradient(circle at 50% 50%, rgba(255,0,0,0.1), transparent 60%),
-            linear-gradient(120deg,#000,#0a0000,#000);
+radial-gradient(circle at 80% 70%, rgba(255,50,50,0.2), transparent 40%),
+radial-gradient(circle at 50% 50%, rgba(255,0,0,0.1), transparent 60%),
+linear-gradient(120deg,#000,#0a0000,#000);
 animation:fondoMove 10s infinite alternate ease-in-out;
 z-index:-1;
 }
@@ -39,29 +41,59 @@ z-index:-1;
 100%{background-position:100% 50%,0% 50%,50% 50%,0 0;}
 }
 
-.container{max-width:420px;margin:auto;padding:15px;}
-h1{color:#ff2a2a;font-size:22px;text-align:center;}
+.container{
+max-width:340px;
+width:100%;
+margin:auto;
+padding:10px;
+}
 
-.tabs{display:flex;background:#111;border-radius:25px;overflow:hidden;margin:15px 0;}
-.tab{flex:1;padding:12px;text-align:center;color:#777;cursor:pointer;}
-.tab.active{background:#ff2a2a;color:#fff;border-radius:25px;}
+h1{
+color:#ff2a2a;
+font-size:18px;
+text-align:center;
+}
+
+.tabs{
+display:flex;
+background:#111;
+border-radius:20px;
+overflow:hidden;
+margin:10px 0;
+}
+
+.tab{
+flex:1;
+padding:8px;
+text-align:center;
+color:#777;
+cursor:pointer;
+font-size:12px;
+}
+
+.tab.active{
+background:#ff2a2a;
+color:#fff;
+border-radius:20px;
+}
 
 input{
 width:100%;
-padding:8px;
+padding:6px;
 margin:5px 0;
 border-radius:10px;
 border:none;
 background:#111;
 color:white;
 text-align:center;
+font-size:12px;
 }
 
 .box{
 background:#120000;
 border:1px solid #ff2a2a;
-border-radius:20px;
-padding:15px;
+border-radius:15px;
+padding:10px;
 }
 
 .titulo{
@@ -73,18 +105,19 @@ justify-content:space-between;
 
 .pill{
 background:#2a0000;
-padding:5px 10px;
+padding:4px 8px;
 border-radius:20px;
 color:#ff2a2a;
-font-size:12px;
+font-size:10px;
 }
 
-.row{margin:15px 0;}
+.row{margin:10px 0;}
 
 .label{
 display:flex;
 justify-content:space-between;
 margin-bottom:5px;
+font-size:12px;
 }
 
 .label span{
@@ -103,28 +136,28 @@ opacity:0.6;
 .bottom{
 display:flex;
 justify-content:space-between;
-margin-top:20px;
+margin-top:15px;
 }
 
 .bottomBox{
 width:48%;
 background:#120000;
 border:1px solid #ff2a2a;
-border-radius:15px;
-padding:15px;
+border-radius:12px;
+padding:10px;
 text-align:center;
 }
 
 .valor{
 color:#ff2a2a;
-font-size:26px;
+font-size:20px;
 }
 
 .footer{
 text-align:center;
 margin-top:10px;
 color:#777;
-font-size:12px;
+font-size:10px;
 }
 
 .flash{
@@ -136,13 +169,32 @@ animation:flashAnim 0.5s ease;
 50%{box-shadow:0 0 30px #ff0000;}
 100%{box-shadow:0 0 10px #ff2a2a;}
 }
+
+/* CELULAR */
+@media (max-width:600px){
+.container{
+max-width:95%;
+padding:8px;
+}
+.tabs{flex-direction:column;}
+.tab{margin-bottom:5px;border-radius:10px;}
+.bottom{flex-direction:column;gap:8px;}
+.bottomBox{width:100%;}
+}
+
+/* PC */
+@media (min-width:800px){
+.container{
+max-width:360px;
+}
+}
 </style>
 </head>
 
 <body>
 
 <div class="container">
-<h1>SENCI DE SALITA 2.0 </h1>
+<h1>SENCI DE SALITA 2.0</h1>
 
 <div class="tabs">
 <div class="tab active" onclick="setTab(this,'normal')">SENSI NORMAL</div>
@@ -218,9 +270,7 @@ document.getElementById('tipo').innerText=tipo.toUpperCase();
 calcular();
 }
 
-function update(id,val){
-// bloqueado
-}
+function update(id,val){}
 
 function calcular(){
 let marca=document.getElementById('marca').value||"";
