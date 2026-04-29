@@ -136,16 +136,53 @@ function selectBtn(element, group) {
 }
 
 function generar() {
-    let general = Math.floor(Math.random() * 200);
-    let redDot = Math.floor(Math.random() * 200);
-    let scope2x = Math.floor(Math.random() * 200);
-    let scope4x = Math.floor(Math.random() * 200);
+
+    let marca = document.querySelector("select").value.toLowerCase();
+
+    let mira = document.querySelectorAll('.buttons')[0].querySelector('.active').innerText;
+    let dpi = document.querySelectorAll('.buttons')[1].querySelector('.active').innerText;
+
+    let base = 100;
+
+    // 🔥 Ajuste por marca
+    if (marca.includes("samsung")) base = 120;
+    else if (marca.includes("xiaomi")) base = 110;
+    else if (marca.includes("motorola")) base = 105;
+    else if (marca.includes("tecno")) base = 115;
+
+    // 🎯 Ajuste por calibración
+    if (mira === "ALTA") base += 30;
+    if (mira === "MEDIA") base += 10;
+    if (mira === "BAJA") base -= 10;
+
+    // ⚡ Ajuste por DPI
+    if (dpi === "CON DPI") base += 10;
+    if (dpi === "SIN DPI") base -= 5;
+
+    // 🎮 Generación precisa
+    function rango(min, max) {
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    let general = rango(base - 5, base + 5);
+    let redDot = rango(base + 5, base + 15);
+    let scope2x = rango(base - 10, base);
+    let scope4x = rango(base - 20, base - 5);
+    let sniper = rango(base - 40, base - 20);
+    let camara = rango(base + 10, base + 25);
 
     document.getElementById("resultado").innerHTML = `
-        General: ${general} <br>
-        Punto rojo: ${redDot} <br>
-        2x: ${scope2x} <br>
-        4x: ${scope4x}
+        <b>AJUSTES DE SENCI (OPTIMIZADA)</b><br><br>
+        📱 Dispositivo: ${marca.toUpperCase()} <br>
+        🎯 Modo: ${mira} <br>
+        ⚙️ DPI: ${dpi} <br><br>
+
+        GENERAL: ${general} <br>
+        MIRA DE PUNTO ROJO: ${redDot} <br>
+        MIRA 2X: ${scope2x} <br>
+        MIRA 4X: ${scope4x} <br>
+        MIRA FRANCOTIRADOR: ${sniper} <br>
+        BOTÓN DE CÁMARA 360°: ${camara}
     `;
 }
 </script>
