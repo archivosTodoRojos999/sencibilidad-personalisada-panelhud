@@ -1,264 +1,154 @@
-
-<!DOCTYPE html><html lang="es">
+<!DOCTYPE html>
+<html lang="es">
 <head>
 <meta charset="UTF-8">
-
-<!-- 🔒 BLOQUEO TOTAL DE ZOOM REAL -->
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-
-<title>SENCI PRO DE SALITA 2.0</title>
-
+<title>VIP CONFIG</title>
 <style>
-body{
-margin:0;
-background:#000;
-font-family:Arial;
-color:white;
-overflow:hidden;
-display:flex;
-justify-content:center;
-align-items:center;
-min-height:100vh;
-touch-action:none; /* bloquea zoom táctil */
-}
+    body {
+        background: #0d0d0d;
+        font-family: Arial, sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+    }
 
-/* 🔥 FONDO */
-body::before{
-content:"";
-position:fixed;
-width:100%;height:100%;
-background:
-radial-gradient(circle at 20% 30%, rgba(255,0,0,0.3), transparent 40%),
-linear-gradient(120deg,#000,#050000,#000);
-z-index:-1;
-}
+    .container {
+        width: 300px;
+        border: 2px solid yellow;
+        padding: 15px;
+        border-radius: 10px;
+        color: white;
+        box-shadow: 0 0 15px yellow;
+    }
 
-/* 📦 CONTENEDOR */
-.container{
-max-width:320px;
-width:95%;
-padding:10px;
-border-radius:20px;
-background:rgba(10,0,0,0.9);
-box-shadow:0 0 20px red;
-overflow:hidden;
-}
+    h1 {
+        text-align: center;
+        color: gold;
+        margin-bottom: 5px;
+    }
 
-/* 🔤 TEXTO AJUSTADO */
-h1{
-font-size:14px;
-text-align:center;
-white-space:nowrap;
-overflow:hidden;
-text-overflow:ellipsis;
-}
+    .sub {
+        text-align: center;
+        font-size: 12px;
+        color: red;
+        margin-bottom: 15px;
+    }
 
-/* 🔘 TABS */
-.tabs{
-display:flex;
-gap:4px;
-margin:8px 0;
-}
+    label {
+        font-size: 12px;
+        color: #ccc;
+    }
 
-.tab{
-flex:1;
-padding:6px;
-font-size:10px;
-text-align:center;
-background:#111;
-border-radius:8px;
-white-space:nowrap;
-overflow:hidden;
-text-overflow:ellipsis;
-}
+    select, input {
+        width: 100%;
+        padding: 8px;
+        margin: 5px 0 10px;
+        border: 1px solid red;
+        background: #111;
+        color: white;
+        border-radius: 5px;
+    }
 
-.tab.active{
-background:red;
-}
+    .buttons {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 10px;
+    }
 
-/* INPUT */
-input{
-width:100%;
-padding:5px;
-margin:3px 0;
-border-radius:8px;
-border:none;
-background:#111;
-color:white;
-font-size:10px;
-text-align:center;
-}
+    .btn {
+        flex: 1;
+        margin: 3px;
+        padding: 10px;
+        text-align: center;
+        border: 1px solid red;
+        cursor: pointer;
+        border-radius: 5px;
+    }
 
-/* BOX */
-.box{
-padding:8px;
-border-radius:12px;
-border:1px solid red;
-}
+    .active {
+        background: yellow;
+        color: black;
+        font-weight: bold;
+    }
 
-/* FILAS */
-.row{
-margin:6px 0;
-}
+    .generate {
+        margin-top: 10px;
+        padding: 10px;
+        text-align: center;
+        border: 2px solid yellow;
+        cursor: pointer;
+        border-radius: 5px;
+        background: #111;
+    }
 
-.label{
-display:flex;
-justify-content:space-between;
-font-size:10px;
-white-space:nowrap;
-overflow:hidden;
-}
-
-/* 🔢 NUMEROS */
-.label span{
-max-width:50px;
-overflow:hidden;
-text-overflow:ellipsis;
-}
-
-/* BARRAS */
-input[type=range]{
-pointer-events:none;
-opacity:0.3;
-}
-
-/* FOOTER */
-.footer{
-font-size:9px;
-text-align:center;
-margin-top:5px;
-}
-
-/* 📱 RESPONSIVE */
-@media (max-width:600px){
-.container{
-width:95%;
-}
-}
+    .result {
+        margin-top: 10px;
+        text-align: center;
+        font-size: 14px;
+        color: cyan;
+    }
 </style>
 </head>
-
 <body>
 
 <div class="container">
+    <h1>👑 VIP CONFIG</h1>
+    <div class="sub">SYSTEMWOODS PREMIUM • SENSIBILIDAD 0-200</div>
 
-<h1>SENCI PRO DE SALITA 2.0</h1>
+    <label>Selecciona la marca</label>
+    <select>
+        <option>-- Seleccionar Sistema --</option>
+        <option>Samsung</option>
+        <option>Xiaomi</option>
+        <option>Motorola</option>
+        <option>Tecno</option>
+    </select>
 
-<!-- 🔥 OPCIONES COMPLETAS RESTAURADAS -->
-<div class="tabs">
-<div class="tab active" onclick="setTab(this,'normal')">NORMAL</div>
-<div class="tab" onclick="setTab(this,'premium')">ALTA</div>
-<div class="tab" onclick="setTab(this,'inspirada')">MEDIA</div>
-</div>
+    <label>Modelo</label>
+    <input type="text" placeholder="Escribe tu modelo">
 
-<input id="marca" placeholder="MARCA" oninput="calcular()">
-<input id="modelo" placeholder="MODELO" oninput="calcular()">
+    <label>Calibración de mira</label>
+    <div class="buttons">
+        <div class="btn active" onclick="selectBtn(this, 'mira')">ALTA</div>
+        <div class="btn" onclick="selectBtn(this, 'mira')">MEDIA</div>
+        <div class="btn" onclick="selectBtn(this, 'mira')">BAJA</div>
+    </div>
 
-<div class="box">
+    <div class="buttons">
+        <div class="btn" onclick="selectBtn(this, 'dpi')">CON DPI</div>
+        <div class="btn active" onclick="selectBtn(this, 'dpi')">SIN DPI</div>
+    </div>
 
-<div class="row">
-<div class="label">GENERAL <span id="general">0</span></div>
-<input type="range" disabled>
-</div>
+    <div class="generate" onclick="generar()">GENERAR SENSI</div>
 
-<div class="row">
-<div class="label">MIRA DE PUNTO ROJO <span id="red">0</span></div>
-<input type="range" disabled>
-</div>
-
-<div class="row">
-<div class="label">MIRA 2X <span id="x2">0</span></div>
-<input type="range" disabled>
-</div>
-
-<div class="row">
-<div class="label">MIRA 4X <span id="x4">0</span></div>
-<input type="range" disabled>
-</div>
-
-<div class="row">
-<div class="label">MIRA FRANCOTIRADOR <span id="awm">0</span></div>
-<input type="range" disabled>
-</div>
-
-<div class="row">
-<div class="label">BOTON DE CAMARA 360º <span id="boton">0</span></div>
-<input type="range" disabled>
-</div>
-
-</div>
-
-<div class="row">
-<div class="label">DPI <span id="dpi">0</span></div>
-</div>
-
-<div class="footer">SENSI AUTO CALIBRADA</div>
-
+    <div class="result" id="resultado"></div>
 </div>
 
 <script>
-// 🔒 EXTRA BLOQUEO ZOOM (doble toque y gesto)
-document.addEventListener('gesturestart', e => e.preventDefault());
-document.addEventListener('dblclick', e => e.preventDefault());
+function selectBtn(element, group) {
+    let parent = element.parentElement;
+    let buttons = parent.querySelectorAll('.btn');
 
-let tipoActual="normal";
-
-function setTab(btn,tipo){
-document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
-btn.classList.add('active');
-tipoActual=tipo;
-calcular();
+    buttons.forEach(btn => btn.classList.remove('active'));
+    element.classList.add('active');
 }
 
-function calcular(){
+function generar() {
+    let general = Math.floor(Math.random() * 200);
+    let redDot = Math.floor(Math.random() * 200);
+    let scope2x = Math.floor(Math.random() * 200);
+    let scope4x = Math.floor(Math.random() * 200);
 
-let texto=(document.getElementById('marca').value||"")+(document.getElementById('modelo').value||"");
-
-let base=0;
-for(let i=0;i<texto.length;i++){
-base+=texto.charCodeAt(i)*(i+2);
-}
-
-base=(base%40)+20;
-
-let mult=1;
-if(tipoActual==="premium") mult=1.10;
-if(tipoActual==="inspirada") mult=0.95;
-
-let micro=(texto.length*3)%8;
-
-let sens={
-general:Math.floor((120+base+micro)*mult),
-red:Math.floor((110+base+micro)*mult),
-x2:Math.floor((95+base)*mult),
-x4:Math.floor((130+base)*mult),
-awm:Math.floor((100+base)*mult),
-boton:Math.floor((50+base)*mult)
-};
-
-function suavizar(v){return Math.floor(v*0.97);}
-for(let k in sens){sens[k]=suavizar(sens[k]);}
-
-function limitar(v,max){return Math.max(1,Math.min(v,max));}
-
-sens.general=limitar(sens.general,200);
-sens.red=limitar(sens.red,200);
-sens.x2=limitar(sens.x2,200);
-sens.x4=limitar(sens.x4,200);
-sens.awm=limitar(sens.awm,200);
-sens.boton=limitar(sens.boton,100);
-
-for(let k in sens){
-document.getElementById(k).innerText=sens[k];
-}
-
-let dpi=400+(base*2);
-dpi=Math.max(400,Math.min(dpi,600));
-document.getElementById('dpi').innerText=dpi;
-
+    document.getElementById("resultado").innerHTML = `
+        General: ${general} <br>
+        Punto rojo: ${redDot} <br>
+        2x: ${scope2x} <br>
+        4x: ${scope4x}
+    `;
 }
 </script>
 
 </body>
 </html>
-```
