@@ -138,6 +138,7 @@ function selectBtn(element, group) {
 function generar() {
 
     let marca = document.querySelector("select").value.toLowerCase();
+    let modelo = document.querySelector("input").value.toLowerCase();
 
     let mira = document.querySelectorAll('.buttons')[0].querySelector('.active').innerText;
     let dpi = document.querySelectorAll('.buttons')[1].querySelector('.active').innerText;
@@ -150,30 +151,62 @@ function generar() {
     else if (marca.includes("motorola")) base = 105;
     else if (marca.includes("tecno")) base = 115;
 
-    // 🎯 Ajuste por calibración
+    // 📱 Ajuste por modelo
+    if (modelo.includes("a") || modelo.includes("note") || modelo.includes("redmi")) base += 5;
+    if (modelo.includes("pro") || modelo.includes("plus")) base += 8;
+    if (modelo.includes("lite") || modelo.includes("go")) base -= 5;
+
+    // 🎯 Calibración de mira
     if (mira === "ALTA") base += 30;
     if (mira === "MEDIA") base += 10;
     if (mira === "BAJA") base -= 10;
 
-    // ⚡ Ajuste por DPI
-    if (dpi === "CON DPI") base += 10;
+    // ⚡ DPI
+    if (dpi === "CON DPI") base += 12;
     if (dpi === "SIN DPI") base -= 5;
 
-    // 🎮 Generación precisa
+    // 🎮 Generador con micro-ajustes
     function rango(min, max) {
         return Math.floor(Math.random() * (max - min + 1)) + min;
     }
 
-    let general = rango(base - 5, base + 5);
-    let redDot = rango(base + 5, base + 15);
-    let scope2x = rango(base - 10, base);
-    let scope4x = rango(base - 20, base - 5);
-    let sniper = rango(base - 40, base - 20);
-    let camara = rango(base + 10, base + 25);
+    function microAjuste(valor) {
+        return valor + Math.floor(Math.random() * 3) - 1;
+    }
+
+    let general = microAjuste(rango(base - 3, base + 3));
+    let redDot = microAjuste(rango(base + 8, base + 12));
+    let scope2x = microAjuste(rango(base - 5, base));
+    let scope4x = microAjuste(rango(base - 15, base - 8));
+    let sniper = microAjuste(rango(base - 35, base - 25));
+    let camara = microAjuste(rango(base + 12, base + 20));
+
+    // 🔒 Estabilidad (anti-retroceso simulado)
+    if (mira === "ALTA") {
+        redDot += 2;
+        scope2x += 1;
+    }
+
+    if (dpi === "CON DPI") {
+        general += 2;
+        camara += 2;
+    }
+
+    // 🧠 Normalización
+    function limitar(valor) {
+        return Math.max(0, Math.min(200, valor));
+    }
+
+    general = limitar(general);
+    redDot = limitar(redDot);
+    scope2x = limitar(scope2x);
+    scope4x = limitar(scope4x);
+    sniper = limitar(sniper);
+    camara = limitar(camara);
 
     document.getElementById("resultado").innerHTML = `
-        <b>AJUSTES DE SENCI (OPTIMIZADA)</b><br><br>
-        📱 Dispositivo: ${marca.toUpperCase()} <br>
+        <b>AJUSTES DE SENCI (ULTRA PRECISIÓN)</b><br><br>
+        📱 Dispositivo: ${marca.toUpperCase()} ${modelo} <br>
         🎯 Modo: ${mira} <br>
         ⚙️ DPI: ${dpi} <br><br>
 
